@@ -23,7 +23,10 @@ public class playingField {
 
 
     public void setTile(byte x, byte y, byte playerNr) {
-        tiles[(((y-1)*8) + (x-1))] = playerNr;
+        int position = (((y-1)*8) + (x-1));
+        if (tiles[position] == 0) {
+            tiles[position] = playerNr;
+        }
     }
 
 
