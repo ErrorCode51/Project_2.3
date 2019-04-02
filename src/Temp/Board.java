@@ -4,7 +4,7 @@ public class Board {
 
     public static final int EMPTY = -1;
     public static final int AI = 0;
-    public static final int HUMAN = 1;
+    public static final int PERSON = 1;
 
     public static final int ROWS = 3;
     public static final int COLUMNS = 3;
@@ -71,50 +71,57 @@ public class Board {
     public int gameOver() {
         // Horizontal
         for (int row = 0; row < ROWS; ++row) {
-            if (this.getSquare(row, 0) != -1 && this.getSquare(row, 1) != -1 && this.getSquare(row, 0) == this.getSquare(row, 1) && this.getSquare(row, 1) == this.getSquare(row, 2)) {
+            if (this.getSquare(row, 0) != -1 && this.getSquare(row, 1) != -1 &&
+                    this.getSquare(row, 0) == this.getSquare(row, 1) &&
+                    this.getSquare(row, 1) == this.getSquare(row, 2)) {
                 if (this.getSquare(row, 0) == Board.AI) {
                     return Board.AI;
                 } else {
-                    return Board.HUMAN;
+                    return Board.PERSON;
                 }
             }
         }
 
         // Vertical
         for (int column = 0; column < ROWS; ++column) {
-            if (this.getSquare(0, column) != -1 && this.getSquare(1, column) != -1 && this.getSquare(0, column) == this.getSquare(1, column) && this.getSquare(1, column) == this.getSquare(2, column)) {
+            if (this.getSquare(0, column) != -1 && this.getSquare(1, column) != -1 &&
+                    this.getSquare(0, column) == this.getSquare(1, column) &&
+                    this.getSquare(1, column) == this.getSquare(2, column)) {
                 if (this.getSquare(0, column) == Board.AI) {
                     return Board.AI;
                 } else {
-                    return Board.HUMAN;
+                    return Board.PERSON;
                 }
             }
         }
 
         // Diagonal
-        if (this.getSquare(0, 0) != -1 && this.getSquare(1, 1) != -1 && this.getSquare(0, 0) == this.getSquare(1, 1) && this.getSquare(1, 1) == this.getSquare(2, 2)) {
+        if (this.getSquare(0, 0) != -1 && this.getSquare(1, 1) != -1 &&
+                this.getSquare(0, 0) == this.getSquare(1, 1) &&
+                this.getSquare(1, 1) == this.getSquare(2, 2)) {
             if (this.getSquare(0, 0) == Board.AI) {
                 return Board.AI;
             } else {
-                return Board.HUMAN;
+                return Board.PERSON;
             }
         }
 
-        if (this.getSquare(0, 2) != -1 && this.getSquare(1, 1) != -1 && this.getSquare(0, 2) == this.getSquare(1, 1) && this.getSquare(1, 1) == this.getSquare(2, 0)) {
+        if (this.getSquare(0, 2) != -1 && this.getSquare(1, 1) != -1 &&
+                this.getSquare(0, 2) == this.getSquare(1, 1) &&
+                this.getSquare(1, 1) == this.getSquare(2, 0)) {
             if (this.getSquare(0, 2) == Board.AI) {
                 return Board.AI;
             } else {
-                return Board.HUMAN;
+                return Board.PERSON;
             }
         }
 
         boolean draw = true;
 
         // Draw
-        for (int i = 0; i < ROWS; ++i) {
-            for (int j = 0; j < COLUMNS; j++) {
-                // A square is empty, can't be a draw
-                if (this.squares[i][j] == -1) {
+        for (int row = 0; row < ROWS; ++row) {
+            for (int column = 0; column < COLUMNS; column++) {
+                if (this.squares[row][column] == -1) {
                     draw = false;
                     break;
                 }

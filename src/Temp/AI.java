@@ -30,23 +30,24 @@ public class AI extends Player {
     }
 
     public TemporaryMove makeMove(Board board) {
-        TemporaryMove move = this.getBestMove(board, Player.AI);
+        int counter = 0;
+        TemporaryMove move = this.getBestMove(board, Player.AI, counter);
         board.makeMove(move.row, move.column, Player.AI);
         return move;
     }
 
-    TemporaryMove getBestMove(Board board, int player) {
+    TemporaryMove getBestMove(Board board, int player, int counter) {
         int winner = board.gameOver();
         if (winner == Board.AI) {
             return new TemporaryMove(10);
-        } else if (winner == Board.HUMAN) {
+        } else if (winner == Board.PERSON) {
             return new TemporaryMove(-10);
         } else if (winner == Board.DRAW) {
             return new TemporaryMove(0);
         }
 
         ArrayList<TemporaryMove> moves = new ArrayList<>();
-
+        counter += 1;
         for (int row = 0; row < board.getSize(); ++row) {
             for (int column = 0; column < board.getSize(); column++) {
                 if (board.squareIsEmpty(row, column)) {
@@ -57,10 +58,10 @@ public class AI extends Player {
                     // Evaluate temporary move
                     if (player == Player.AI) {
                         // If player is AI score positively
-                        move.score = getBestMove(board, Player.HUMAN).score;
+                        move.score = getBestMove(board, Player.HUMAN, counter).score - counter;
                     } else {
                         // Else score negatively
-                        move.score = getBestMove(board, Player.AI).score;
+                        move.score = counter + getBestMove(board, Player.AI, counter).score;
                     }
                     // Remove temporary move
                     board.setSquare(row, column, Board.EMPTY);
@@ -88,7 +89,6 @@ public class AI extends Player {
                 }
             }
         }
-
         return moves.get(bestMove);
     }
 
