@@ -50,7 +50,7 @@ public class serverController implements Runnable{
         }
     }
 
-
+// TODO: 02/04/2019 fix all methods so they work with the events happening in the game
     private void loginToServer(String name){
         out.println("login "+name);
     }
