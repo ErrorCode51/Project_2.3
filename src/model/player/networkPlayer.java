@@ -5,7 +5,12 @@ import model.playingField.playingField;
 
 public class networkPlayer implements player {
 
-    public int takeTurn(playingField field, gameRules rules) {
-        return 0;
+    public byte[] takeTurn(playingField field, gameRules rules) {
+        return null;
+    }
+
+
+    public boolean isReady() {
+        return false;
     }
 }

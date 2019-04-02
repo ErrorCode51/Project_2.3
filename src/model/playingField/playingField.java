@@ -1,5 +1,8 @@
 package model.playingField;
 
+import model.gameRules.gameRules;
+import model.player.player;
+
 import java.util.Arrays;
 
 // this class is a playing field for one of the board games
@@ -13,9 +16,16 @@ public class playingField {
         tiles = new byte[this.size * this.size];
     }
 
+
     public int getSize() {
         return size;
     }
+
+
+    public void setTile(byte x, byte y, byte playerNr) {
+        tiles[(((y-1)*8) + (x-1))] = playerNr;
+    }
+
 
     public byte[][] to2dArray() {
         if (this.tiles != null) {
