@@ -6,7 +6,6 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
-
 public class serverController implements Runnable{
     private final String host= "localhost";
     private final int portNumber = 7789;
@@ -15,6 +14,7 @@ public class serverController implements Runnable{
     private Socket socket;
     private boolean running = true;
 
+//Open a socket connection to the server
     private void connectToServer(){
        try{
            running = true;
@@ -29,21 +29,60 @@ public class serverController implements Runnable{
        }
     }
 
+
     public void run()  {
+        System.out.println("Creating socket to '" + host + "' on port " + portNumber);
+        connectToServer();
+        loginToServer("kevin");
+        subTogame("Tic-tac-toe");
         while(running){
-            System.out.println("Creating socket to '" + host + "' on port " + portNumber);
-            connectToServer();
-            loginToServer();
+            serverMessages();
         }
-
-
-
     }
 
-    public void loginToServer(){
-        out.println("login kevin");
-        System.out.println("it's printed");
+
+//Gets the messages that are being send by the server
+    private void serverMessages(){
+        try{
+            System.out.println(br.readLine());
+        }catch (IOException e){
+            e.printStackTrace();
+        }
     }
 
+
+    private void loginToServer(String name){
+        out.println("login "+name);
+    }
+
+
+    private void logout(){
+        out.println("bye");
+    }
+
+// parameter can be gamelist or playerlist
+    private void getlist(String listtype){
+        out.println("get " + listtype);
+    }
+
+    private void subTogame(String game){
+        out.println("subscribe " + game);
+    }
+
+    private void move(String coordinates){
+        out.println("move " + coordinates);
+    }
+
+    private void challengeAccept(){
+        out.println("challenge accept");
+    }
+
+    private void forfeit(){
+        out.println("forfeit");
+    }
+
+    private void help(){
+        out.println("help");
+    }
 
 }
