@@ -29,6 +29,10 @@ public class playingField {
         }
     }
 
+    public boolean tileIsEmplty(byte row, byte column) {
+        return (this.tiles[row][column] == 0);
+    }
+
 
     public byte[][] to2dArray() {
         if (this.tiles != null) {
