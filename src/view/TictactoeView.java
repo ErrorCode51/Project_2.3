@@ -12,6 +12,7 @@ import javafx.scene.shape.Line;
 import javafx.stage.Stage;
 
 import model.playingField.playingField;
+import controller.playerInputObserver.playerInputSubject;
 
 public class TictactoeView extends Application {
 
@@ -21,8 +22,8 @@ public class TictactoeView extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         GridPane pane = new GridPane();
-        for (int i = 0; i < 3; i++){
-            for (int j = 0; j < 3; j++){
+        for (byte i = 0; i < 3; i++){
+            for (byte j = 0; j < 3; j++){
                 pane.add(cell[i][j] = new Cell(i,j), j,i);
             }
         }
@@ -50,17 +51,17 @@ public class TictactoeView extends Application {
 
     public class Cell extends Pane {
 
-        private int row;
-        private int column;
+        private byte row;
+        private byte column;
 
         private byte player = 0;
 
-        public Cell(int row, int column) {
+        public Cell(byte row, byte column) {
             this.row = row;
             this.column = column;
             this.setPrefSize(300, 300);
             setStyle("-fx-border-color: black");
-            //this.setOnMouseClicked(e -> handleMouseClick());
+            this.setOnMouseClicked(e -> handleMouseClick());
         }
 
         public byte getPlayer() {
@@ -105,25 +106,9 @@ public class TictactoeView extends Application {
             }
         }
 
-       /* private void handleMouseClick() {
-            if (player == ' ') {
-                setPlayer(currentPlayer);
-
-                if (hasWon(currentPlayer)){
-                    gameStatus.setText(currentPlayer + " has won!");
-                    currentPlayer = ' ';
-                }else if (isBoardFull()){
-                    gameStatus.setText("It is a draw.");
-                    currentPlayer = ' ';
-                }else if (currentPlayer == 'X'){
-                    currentPlayer = 'O';
-                    gameStatus.setText("It is " + currentPlayer + "'s turn.");
-                }else if (currentPlayer == 'O') {
-                    currentPlayer = 'X';
-                    gameStatus.setText("It is " + currentPlayer + "'s turn.");
-                }
-            }
-        }*/
+        private void handleMouseClick() {
+            playerInputSubject.notify(row, column);
+        }
     }
 }
 
