@@ -5,6 +5,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.Arrays;
+
+// TODO: 03/04/2019 clean this mess up and make handlers for the switch cases
 
 public class serverController implements Runnable{
     private final String host= "localhost";
@@ -13,6 +16,7 @@ public class serverController implements Runnable{
     private BufferedReader br;
     private Socket socket;
     private boolean running = true;
+    private String[] splitedMessage;
 
 //Open a socket connection to the server
     private void connectToServer(){
@@ -36,21 +40,14 @@ public class serverController implements Runnable{
         loginToServer("kevin");
         subTogame("Tic-tac-toe");
         while(running){
-            serverMessages();
+          //  serverMessages();
+            handleMessage();
         }
     }
 
-
-//Gets the messages that are being send by the server
-    private void serverMessages(){
-        try{
-            System.out.println(br.readLine());
-        }catch (IOException e){
-            e.printStackTrace();
-        }
-    }
 
 // TODO: 02/04/2019 fix all methods so they work with the events happening in the game
+// TODO: 03/04/2019 make this cleaner
     private void loginToServer(String name){
         out.println("login "+name);
     }
@@ -83,6 +80,71 @@ public class serverController implements Runnable{
 
     private void help(){
         out.println("help");
+    }
+
+//    server message handling
+    // TODO: 03/04/2019 Make this its own class
+    // TODO: 03/04/2019 handle events with AI
+    private void handleMessage(){
+        try {
+            String servmessage = br.readLine();
+            splitedMessage = servmessage.split("\\s+");
+                System.out.println(Arrays.toString(splitedMessage));
+            switch (splitedMessage[0]){
+                case "OK":
+                    System.out.println("OK was called");
+                    break;
+                case "ERR":
+                    System.out.println("The server gave an error");
+                    break;
+                case "SVR":
+                    System.out.println("Server message");
+                    handleSrv(splitedMessage[1]);
+                    break;
+            }
+
+
+        }catch (IOException IE){
+            IE.printStackTrace();
+        }
+    }
+//    Handles all server(SVR) related messages
+    private void handleSrv(String typeOfMessage){
+            switch (typeOfMessage){
+                case "HELP":
+                    System.out.println("Help was called");
+                    break;
+                case "GAME":
+                    System.out.println("game was called");
+                    gamehandler(splitedMessage[2]);
+                    break;
+                case "GAMELIST":
+                    System.out.println("gamelist was called");
+                    break;
+                case "PLAYERLIST":
+                    System.out.println("playerlist was called");
+                    break;
+            }
+    }
+
+    private void gamehandler(String gameOption){
+        switch(gameOption){
+            case "MATCH":
+                System.out.println("match was called");
+                break;
+            case "YOURTURN":
+                System.out.println("yourturn was called");
+                break;
+            case "WIN":
+                System.out.println("win was called");
+                break;
+            case "LOSS":
+                System.out.println("loss was called");
+                break;
+            case "DRAW":
+                System.out.println("draw was called");
+                break;
+        }
     }
 
 }
