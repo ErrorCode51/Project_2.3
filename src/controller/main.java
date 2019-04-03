@@ -3,7 +3,7 @@ package controller;
 
 public class main {
     public static void main(String[] args){
-        serverController server = new serverController();
+        ServerController server = new ServerController();
         new Thread(server).start();
     }
 }

@@ -6,10 +6,14 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Arrays;
+import java.util.Map;
+
+//todo: remove once random string generator is remove from yourturn case
+import java.util.Random;
 
 // TODO: 03/04/2019 clean this mess up and make handlers for the switch cases
 
-public class serverController implements Runnable{
+public class ServerController implements Runnable{
     private final String host= "localhost";
     private final int portNumber = 7789;
     private PrintWriter out;
@@ -17,6 +21,7 @@ public class serverController implements Runnable{
     private Socket socket;
     private boolean running = true;
     private String[] splitedMessage;
+    private Map splitOnMap;
 
 //Open a socket connection to the server
     private void connectToServer(){
@@ -40,18 +45,16 @@ public class serverController implements Runnable{
         loginToServer("kevin");
         subTogame("Tic-tac-toe");
         while(running){
-          //  serverMessages();
             handleMessage();
         }
     }
 
 
 // TODO: 02/04/2019 fix all methods so they work with the events happening in the game
-// TODO: 03/04/2019 make this cleaner
+// TODO: 03/04/2019 make this cleaner, maybe put it in another class if possible
     private void loginToServer(String name){
         out.println("login "+name);
     }
-
 
     private void logout(){
         out.println("bye");
@@ -88,11 +91,15 @@ public class serverController implements Runnable{
     private void handleMessage(){
         try {
             String servmessage = br.readLine();
+
+            genMap(servmessage);
+
             splitedMessage = servmessage.split("\\s+");
-                System.out.println(Arrays.toString(splitedMessage));
+            System.out.println(Arrays.toString(splitedMessage));
+
             switch (splitedMessage[0]){
                 case "OK":
-                    System.out.println("OK was called");
+                    System.out.println("server said OK");
                     break;
                 case "ERR":
                     System.out.println("The server gave an error");
@@ -102,12 +109,19 @@ public class serverController implements Runnable{
                     handleSrv(splitedMessage[1]);
                     break;
             }
-
-
         }catch (IOException IE){
             IE.printStackTrace();
         }
     }
+    private void genMap(String serverMessage){
+        if (serverMessage.contains("{")) {
+            String tempString = serverMessage.substring(serverMessage.indexOf("{"));
+            System.out.println("TEST ->" + tempString);
+        }
+        // TODO: 03/04/2019 Create map with the data above.
+    }
+
+    
 //    Handles all server(SVR) related messages
     private void handleSrv(String typeOfMessage){
             switch (typeOfMessage){
@@ -126,7 +140,7 @@ public class serverController implements Runnable{
                     break;
             }
     }
-
+// handles all messages containing the word GAME
     private void gamehandler(String gameOption){
         switch(gameOption){
             case "MATCH":
@@ -134,15 +148,20 @@ public class serverController implements Runnable{
                 break;
             case "YOURTURN":
                 System.out.println("yourturn was called");
+                // TODO: 03/04/2019  Add code for doing the move ( and remove the random one, pls)
+                Random rand = new Random();
+                int n = rand.nextInt(8);
+                String str = Integer.toString(n);
+                move(str);
                 break;
             case "WIN":
-                System.out.println("win was called");
+                System.out.println("You've won!");
                 break;
             case "LOSS":
-                System.out.println("loss was called");
+                System.out.println("You've lost :(");
                 break;
             case "DRAW":
-                System.out.println("draw was called");
+                System.out.println("It's a draw!");
                 break;
         }
     }
