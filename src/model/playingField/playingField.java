@@ -23,15 +23,21 @@ public class playingField {
 
 
     public void setTile(byte x, byte y, byte playerNr) {
-        if (x <= this.size && y <= this.size){
+        if (x < this.size && y < this.size && x >= 0 && y >= 0){
             if (this.tiles[x][y] == 0) {
                 if (playerNr == 1 || playerNr == 2) {
                     this.tiles[x][y] = playerNr;
                 }
                 else {
-
+                    System.err.println("Error: That's not a valid player number");
                 }
             }
+            else {
+                System.err.println("Error: That tile is already taken");
+            }
+        }
+        else {
+            System.err.println("Error: That tile does not exists");
         }
     }
 

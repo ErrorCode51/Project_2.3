@@ -2,12 +2,40 @@ package model.gameRules;
 
 import model.playingField.playingField;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+
 public class ticTacToeRules implements gameRules {
 
-    public byte[] getValidMoves(playingField field) {
-        return null;
+    public byte[][] getValidMoves(playingField field) {
+        byte tiles[][] = field.getTiles();
+        ArrayList<byte[]> moves = new ArrayList<byte[]>();
+        for (byte i = 0; i < 3; i++){
+            for (byte j = 0; j < 3; j++){
+                if (tiles[i][j] == 0){
+                    moves.add(new byte[]{i, j});
+                }
+            }
+        }
+        if (moves.isEmpty()) {
+            return null;
+        }
+        byte[][] movesArray = new byte[moves.size()][];
+        movesArray = moves.toArray(movesArray);
+        return movesArray;
     }
 
+    public boolean boardIsFull(playingField field){
+        byte tiles[][] = field.getTiles();
+        for (int i = 0; i < 3; i++){
+            for (int j = 0; j < 3; j++){
+                if (tiles[i][j] == 0){
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
 
     public byte getGameStatus(playingField field) {
         byte tiles[][] = field.getTiles();
@@ -29,6 +57,11 @@ public class ticTacToeRules implements gameRules {
         if (tiles[0][2] == tiles[1][1] && tiles[1][1] == tiles[2][0] && tiles[1][1] != 0) {
             return tiles[1][1];
         }
+        // no winner was found, returning zero
         return 0;
+    }
+
+    public boolean gameFinished(playingField field){
+        return (boardIsFull(field) || getGameStatus(field) != 0);
     }
 }
