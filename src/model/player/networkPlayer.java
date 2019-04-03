@@ -5,6 +5,7 @@ import model.playingField.playingField;
 
 public class networkPlayer implements player {
 
+    // Our AI needs to be able to differentiate between players.
     // Temporary solution as of now:
     // Computer = 1
     // Human = 2
