@@ -19,13 +19,13 @@ public class game {
         players = new player[2];
 
         while (true) {
-            handeTurn(players[0]);
-            handeTurn(players[1]);
+            handleTurn(players[0]);
+            handleTurn(players[1]);
         }
     }
 
 
-    private void handeTurn(player player) {
+    private void handleTurn(player player) {
         byte[] set = player.takeTurn(field, daRules);
         try {
             if (set[0] < field.getSize() && set[1] < field.getSize()) {
