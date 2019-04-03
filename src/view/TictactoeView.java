@@ -17,11 +17,6 @@ public class TictactoeView extends Application {
 
     private Cell[][] cell = new Cell[3][3];
     private Label gameStatus = new Label();
-    private char currentPlayer = 'X';
-
-    public static void main(String[] args){
-        launch(args);
-    }
 
     @Override
     public void start(Stage primaryStage) throws Exception {
