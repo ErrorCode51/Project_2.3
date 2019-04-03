@@ -3,7 +3,7 @@ package controller.playerInputObserver;
 import java.util.ArrayList;
 
 public class playerInputSubject {
-    static ArrayList<playerInputObserver> observers;
+    static ArrayList<playerInputObserver> observers = new ArrayList<playerInputObserver>();
 
     public static synchronized void subscribe(playerInputObserver o) {
         observers.add(o);
