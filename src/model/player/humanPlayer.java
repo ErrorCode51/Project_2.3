@@ -10,12 +10,18 @@ public class humanPlayer implements player, playerInputObserver {
     private byte setY = -1;
 
     public byte[] takeTurn(playingField field, gameRules rules){
+        System.out.println("Player has been given a turn");
         this.setX = -1;
         this.setY = -1;
 
         playerInputSubject.subscribe(this);
 
-        while (this.setX == -1 || setY == -1);
+        System.out.println(this.setX == -1);
+
+        System.out.println("going into while loop");
+        while (this.setX == -1 && this.setY == -1) { Thread.yield(); }
+
+        System.out.println("exiting while loop");
 
         playerInputSubject.unsubscribe(this);
 
@@ -29,7 +35,13 @@ public class humanPlayer implements player, playerInputObserver {
 
 
     public void notify(byte x, byte y) {
+        System.out.println("this player has been notified");
         this.setX = x;
         this.setY = y;
+
+        System.out.println(this.setX);
+        System.out.println(this.setY);
+
+        System.out.println(this.setX == -1);
     }
 }

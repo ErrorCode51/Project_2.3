@@ -1,6 +1,7 @@
 package view;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
@@ -13,11 +14,15 @@ import javafx.stage.Stage;
 
 import model.playingField.playingField;
 import controller.playerInputObserver.playerInputSubject;
+import model.game;
+import view.setPlayerHelper;
 
 public class TictactoeView extends Application {
 
     private Cell[][] cell = new Cell[3][3];
     private Label gameStatus = new Label();
+    private boolean ready = false;
+    private game g;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -35,7 +40,13 @@ public class TictactoeView extends Application {
         primaryStage.setTitle("Tic-tac-toe");
         primaryStage.setScene(scene);
         primaryStage.show();
+        primaryStage.setOnCloseRequest(e -> Platform.exit());
 
+        g = new game(this);
+        Thread t = new Thread(g);
+        t.start();
+
+        ready = true;
     }
 
 
@@ -43,9 +54,18 @@ public class TictactoeView extends Application {
         byte tiles[][] = field.getTiles();
         for (byte x = 0; x < tiles.length; x++) {
             for (byte y = 0; y < tiles[x].length; y++) {
-                cell[x][y].setPlayer(tiles[x][y]);
+                Platform.runLater(new setPlayerHelper(this, x, y, tiles[x][y]));
+//                cell[x][y].setPlayer(tiles[x][y]);
             }
         }
+    }
+
+    public boolean isReady() {
+        return ready;
+    }
+
+    public Cell[][] getCell(){
+        return cell;
     }
 
 
