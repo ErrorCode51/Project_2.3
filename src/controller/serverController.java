@@ -7,6 +7,7 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Arrays;
 import java.util.Map;
+import com.google.common.base.*;
 
 //todo: remove once random string generator is remove from yourturn case
 import java.util.Random;
@@ -20,8 +21,8 @@ public class ServerController implements Runnable{
     private BufferedReader br;
     private Socket socket;
     private boolean running = true;
-    private String[] splitedMessage;
-    private Map splitOnMap;
+    private String[] splittedMessage;
+    private ClientCommands clientcom = new ClientCommands();
 
 //Open a socket connection to the server
     private void connectToServer(){
@@ -42,47 +43,11 @@ public class ServerController implements Runnable{
     public void run()  {
         System.out.println("Creating socket to '" + host + "' on port " + portNumber);
         connectToServer();
-        loginToServer("kevin");
-        subTogame("Tic-tac-toe");
+        clientcom.loginToServer("kevin",out);
+        clientcom.subTogame("Tic-tac-toe",out);
         while(running){
             handleMessage();
         }
-    }
-
-
-// TODO: 02/04/2019 fix all methods so they work with the events happening in the game
-// TODO: 03/04/2019 make this cleaner, maybe put it in another class if possible
-    private void loginToServer(String name){
-        out.println("login "+name);
-    }
-
-    private void logout(){
-        out.println("bye");
-    }
-
-// parameter can be gamelist or playerlist
-    private void getlist(String listtype){
-        out.println("get " + listtype);
-    }
-
-    private void subTogame(String game){
-        out.println("subscribe " + game);
-    }
-
-    private void move(String coordinates){
-        out.println("move " + coordinates);
-    }
-
-    private void challengeAccept(){
-        out.println("challenge accept");
-    }
-
-    private void forfeit(){
-        out.println("forfeit");
-    }
-
-    private void help(){
-        out.println("help");
     }
 
 //    server message handling
@@ -92,12 +57,14 @@ public class ServerController implements Runnable{
         try {
             String servmessage = br.readLine();
 
-            genMap(servmessage);
+            if (servmessage.contains("{")) {
+                genMap(servmessage);
+            }
 
-            splitedMessage = servmessage.split("\\s+");
-            System.out.println(Arrays.toString(splitedMessage));
+            splittedMessage = servmessage.split("\\s+");
+            System.out.println(Arrays.toString(splittedMessage));
 
-            switch (splitedMessage[0]){
+            switch (splittedMessage[0]){
                 case "OK":
                     System.out.println("server said OK");
                     break;
@@ -106,22 +73,32 @@ public class ServerController implements Runnable{
                     break;
                 case "SVR":
                     System.out.println("Server message");
-                    handleSrv(splitedMessage[1]);
+                    handleSrv(splittedMessage[1]);
                     break;
             }
         }catch (IOException IE){
             IE.printStackTrace();
         }
     }
+
+//    Generate the maps given in the servermessage
+//    Uses the guava Splitter library to split the map into keys and values
     private void genMap(String serverMessage){
-        if (serverMessage.contains("{")) {
-            String tempString = serverMessage.substring(serverMessage.indexOf("{"));
-            System.out.println("TEST ->" + tempString);
+
+        String tempString = serverMessage.substring(serverMessage.indexOf("{"));
+
+        tempString = tempString.replaceAll("[{}\"]", "");
+
+        Map<String, String> splitMap = Splitter.on(",").withKeyValueSeparator(":").split(tempString);
+
+//            TEST TODO: REMOVE WHEN DONE
+        for ( String key : splitMap.keySet()) {
+            System.out.println("The value that belongs to " + key + " is " + splitMap.get(key));
         }
-        // TODO: 03/04/2019 Create map with the data above.
+//            TEST END
     }
 
-    
+
 //    Handles all server(SVR) related messages
     private void handleSrv(String typeOfMessage){
             switch (typeOfMessage){
@@ -130,7 +107,7 @@ public class ServerController implements Runnable{
                     break;
                 case "GAME":
                     System.out.println("game was called");
-                    gamehandler(splitedMessage[2]);
+                    gamehandler(splittedMessage[2]);
                     break;
                 case "GAMELIST":
                     System.out.println("gamelist was called");
@@ -152,7 +129,7 @@ public class ServerController implements Runnable{
                 Random rand = new Random();
                 int n = rand.nextInt(8);
                 String str = Integer.toString(n);
-                move(str);
+                clientcom.move(str,out);
                 break;
             case "WIN":
                 System.out.println("You've won!");
