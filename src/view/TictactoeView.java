@@ -1,4 +1,7 @@
+package view;
+
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
@@ -9,21 +12,23 @@ import javafx.scene.shape.Ellipse;
 import javafx.scene.shape.Line;
 import javafx.stage.Stage;
 
+import model.playingField.playingField;
+import controller.playerInputObserver.playerInputSubject;
+import model.game;
+import view.setPlayerHelper;
+
 public class TictactoeView extends Application {
 
     private Cell[][] cell = new Cell[3][3];
     private Label gameStatus = new Label();
-    private char currentPlayer = 'X';
-
-    public static void main(String[] args){
-        launch(args);
-    }
+    private boolean ready = false;
+    private game g;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
         GridPane pane = new GridPane();
-        for (int i = 0; i < 3; i++){
-            for (int j = 0; j < 3; j++){
+        for (byte i = 0; i < 3; i++){
+            for (byte j = 0; j < 3; j++){
                 pane.add(cell[i][j] = new Cell(i,j), j,i);
             }
         }
@@ -35,51 +40,43 @@ public class TictactoeView extends Application {
         primaryStage.setTitle("Tic-tac-toe");
         primaryStage.setScene(scene);
         primaryStage.show();
+        primaryStage.setOnCloseRequest(e -> System.exit(0));
 
+        g = new game(this);
+        Thread t = new Thread(g);
+        t.start();
+
+        ready = true;
     }
 
-    public boolean isBoardFull(){
-        for (int i = 0; i < 3; i++){
-            for (int j = 0; j < 3; j++){
-                if (cell[i][j].getPlayer() == ' '){
-                    return false;
-                }
+
+    public void setPlayingfield(playingField field) {
+        byte tiles[][] = field.getTiles();
+        for (byte x = 0; x < tiles.length; x++) {
+            for (byte y = 0; y < tiles[x].length; y++) {
+                Platform.runLater(new setPlayerHelper(this, x, y, tiles[x][y]));
+//                cell[x][y].setPlayer(tiles[x][y]);
             }
         }
-        return true;
     }
 
-    public boolean hasWon(char player){
-        for (int i = 0; i < 3; i++){
-            if (cell[i][0].getPlayer() == player && cell[i][1].getPlayer() == player && cell[i][2].getPlayer() == player){
-                return true;
-            }
-        }
-
-        for (int i = 0; i < 3; i++){
-            if (cell[0][i].getPlayer() == player && cell[1][i].getPlayer() == player && cell[2][i].getPlayer() == player){
-                return true;
-            }
-        }
-
-        if (cell[0][0].getPlayer() == player && cell[1][1].getPlayer() == player && cell[2][2].getPlayer() == player){
-            return true;
-        }
-
-        if (cell[0][2].getPlayer() == player && cell[1][1].getPlayer() == player && cell[2][0].getPlayer() == player){
-            return true;
-        }
-        return false;
+    public boolean isReady() {
+        return ready;
     }
+
+    public Cell[][] getCell(){
+        return cell;
+    }
+
 
     public class Cell extends Pane {
 
-        private int row;
-        private int column;
+        private byte row;
+        private byte column;
 
-        private char player = ' ';
+        private byte player = 0;
 
-        public Cell(int row, int column) {
+        public Cell(byte row, byte column) {
             this.row = row;
             this.column = column;
             this.setPrefSize(300, 300);
@@ -87,17 +84,17 @@ public class TictactoeView extends Application {
             this.setOnMouseClicked(e -> handleMouseClick());
         }
 
-        public char getPlayer() {
+        public byte getPlayer() {
             return player;
         }
 
-        public void setPlayer(char player) {
+        public void setPlayer(byte player) {
             this.player = player;
             drawPlayer();
         }
 
         protected void drawPlayer() {
-            if (player == 'X') {
+            if (player == 1) {
                 Line line1 = new Line(10, 10,
                         this.getWidth() - 10, this.getHeight() - 10);
                 line1.endXProperty().bind(this.widthProperty().subtract(10));
@@ -110,7 +107,7 @@ public class TictactoeView extends Application {
 
                 this.getChildren().addAll(line1, line2);
             }
-            else if (player == 'O') {
+            else if (player == 2) {
                 Ellipse ellipse = new Ellipse(this.getWidth() / 2,
                         this.getHeight() / 2, this.getWidth() / 2 - 10,
                         this.getHeight() / 2 - 10);
@@ -130,23 +127,7 @@ public class TictactoeView extends Application {
         }
 
         private void handleMouseClick() {
-            if (player == ' ') {
-                setPlayer(currentPlayer);
-
-                if (hasWon(currentPlayer)){
-                    gameStatus.setText(currentPlayer + " has won!");
-                    currentPlayer = ' ';
-                }else if (isBoardFull()){
-                    gameStatus.setText("It is a draw.");
-                    currentPlayer = ' ';
-                }else if (currentPlayer == 'X'){
-                    currentPlayer = 'O';
-                    gameStatus.setText("It is " + currentPlayer + "'s turn.");
-                }else if (currentPlayer == 'O') {
-                    currentPlayer = 'X';
-                    gameStatus.setText("It is " + currentPlayer + "'s turn.");
-                }
-            }
+            playerInputSubject.notify(row, column);
         }
     }
 }
