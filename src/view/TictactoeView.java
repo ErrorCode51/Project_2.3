@@ -40,7 +40,7 @@ public class TictactoeView extends Application {
         primaryStage.setTitle("Tic-tac-toe");
         primaryStage.setScene(scene);
         primaryStage.show();
-        primaryStage.setOnCloseRequest(e -> Platform.exit());
+        primaryStage.setOnCloseRequest(e -> System.exit(0));
 
         g = new game(this);
         Thread t = new Thread(g);
