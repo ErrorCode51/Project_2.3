@@ -16,11 +16,9 @@ public class playingField {
         tiles = new byte[this.size][this.size];
     }
 
-
     public int getSize() {
         return size;
     }
-
 
     public void setTile(byte x, byte y, byte playerNr) {
         if (x < this.size && y < this.size && x >= 0 && y >= 0){
@@ -41,6 +39,9 @@ public class playingField {
         }
     }
 
+    public boolean tileIsEmplty(byte row, byte column) {
+        return (this.tiles[row][column] == 0);
+    }
 
     public final byte[][] getTiles() {
         return this.tiles.clone();
