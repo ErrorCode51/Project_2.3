@@ -51,7 +51,7 @@ public class computerPlayer implements player {
         // Human win = 2
         // Network win = 3
         // Todo: Implement method to receive game result
-        byte winner = rules.getGameStatus();
+        byte winner = rules.getGameStatus(field);
         if (winner == ID) {
             return new TemporaryMove(10);
         } else if (winner > 1) {
