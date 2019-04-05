@@ -10,9 +10,7 @@ import static javafx.application.Application.launch;
 public class Main {
 
     public static void main(String[] args) {
-        launch(TicTacToeView.class, args);
-        TicTacToe game = new TicTacToe();
-        game.run();
+        launch(TicTacToeView.class);
     }
 
 }

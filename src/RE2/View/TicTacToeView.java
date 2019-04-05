@@ -1,5 +1,6 @@
 package RE2.View;
 
+import RE2.Model.TicTacToe;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.scene.Scene;
@@ -22,8 +23,7 @@ public class TicTacToeView extends Application {
 
     private Cell[][] cell = new Cell[3][3];
     private Label gameStatus = new Label();
-    private boolean ready = false;
-
+    private TicTacToe game;
 
     @Override
     public void start(Stage primaryStage) throws Exception {
@@ -43,6 +43,9 @@ public class TicTacToeView extends Application {
         primaryStage.show();
         primaryStage.setOnCloseRequest(e -> System.exit(0));
 
+        TicTacToe game = new TicTacToe();
+        this.game = game;
+        game.run();
     }
 
     public class Cell extends Pane {
@@ -60,17 +63,8 @@ public class TicTacToeView extends Application {
             this.setOnMouseClicked(e -> handleMouseClick());
         }
 
-        public char getPlayer() {
-            return player;
-        }
-
-        public void setPlayer(char player) {
-            this.player = player;
-            drawPlayer();
-        }
-
         protected void drawPlayer() {
-            if (player == 'X') {
+            if (game.getCurrentPlayer() == 'X') {
                 Line line1 = new Line(10, 10,
                         this.getWidth() - 10, this.getHeight() - 10);
                 line1.endXProperty().bind(this.widthProperty().subtract(10));
@@ -83,7 +77,7 @@ public class TicTacToeView extends Application {
 
                 this.getChildren().addAll(line1, line2);
             }
-            else if (player == 'O') {
+            else if (game.getCurrentPlayer() == 'O') {
                 Ellipse ellipse = new Ellipse(this.getWidth() / 2,
                         this.getHeight() / 2, this.getWidth() / 2 - 10,
                         this.getHeight() / 2 - 10);
@@ -103,7 +97,8 @@ public class TicTacToeView extends Application {
         }
 
         private void handleMouseClick() {
-            setPlayer('X');
+            drawPlayer();
+            game.changePlayer();
         }
     }
 }

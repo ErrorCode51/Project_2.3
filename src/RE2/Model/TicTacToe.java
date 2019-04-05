@@ -37,6 +37,10 @@ public class TicTacToe implements Game {
 
     }
 
+    public char getCurrentPlayer() {
+        return currentPlayer;
+    }
+
     public void changePlayer() {
         currentPlayer = (currentPlayer == 'X') ? 'O' : 'X';
     }
