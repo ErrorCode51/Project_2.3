@@ -1,7 +1,10 @@
 package RE2.View;
 
-import RE2.Model.TicTacToe;
-import RE2.Model.TicTacToeStone;
+import RE2.Model.*;
+import RE2.Model.Game.TicTacToe;
+import RE2.Model.Player.LocalPlayer;
+import RE2.Model.Player.Player;
+import RE2.Model.Stone.TicTacToeStone;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -95,18 +98,80 @@ public class TicTacToeView extends Application {
             }
         }
 
+        protected void drawPlayer(byte row, byte column) {
+            if (game.getCurrentPlayer() == 'X') {
+                Line line1 = new Line(10, 10,
+                        this.getWidth() - 10, this.getHeight() - 10);
+                line1.endXProperty().bind(this.widthProperty().subtract(10));
+                line1.endYProperty().bind(this.heightProperty().subtract(10));
+                Line line2 = new Line(10, this.getHeight() - 10,
+                        this.getWidth() - 10, 10);
+                line2.startYProperty().bind(
+                        this.heightProperty().subtract(10));
+                line2.endXProperty().bind(this.widthProperty().subtract(10));
+
+                cell[row][column].getChildren().addAll(line1, line2);
+            } else if (game.getCurrentPlayer() == 'O') {
+                Ellipse ellipse = new Ellipse(this.getWidth() / 2,
+                        this.getHeight() / 2, this.getWidth() / 2 - 10,
+                        this.getHeight() / 2 - 10);
+                ellipse.centerXProperty().bind(
+                        this.widthProperty().divide(2));
+                ellipse.centerYProperty().bind(
+                        this.heightProperty().divide(2));
+                ellipse.radiusXProperty().bind(
+                        this.widthProperty().divide(2).subtract(10));
+                ellipse.radiusYProperty().bind(
+                        this.heightProperty().divide(2).subtract(10));
+                ellipse.setStroke(Color.BLACK);
+                ellipse.setFill(Color.WHITE);
+
+                cell[row][column].getChildren().add(ellipse);
+            }
+        }
+
         private void handleMouseClick() {
             //Todo: Clean this.
-            if (game.gameOver(game.getBoard()) == 'N') {
-                if (placeStone()) {
-                    drawPlayer();
-                    if (game.gameOver(game.getBoard()) == 'N') {
-                        game.changePlayer();
-                    } else {
-                        if (game.gameOver(game.getBoard()) == 'X' || game.gameOver(game.getBoard()) == 'O') {
-                            gameStatus.setText("Winner is " + game.gameOver(game.getBoard()));
+//            if (game.gameOver(game.getBoard()) == 'N') {
+//                if (placeStone()) {
+//                    drawPlayer();
+//                    if (game.gameOver(game.getBoard()) == 'N') {
+//                        game.changePlayer();
+//                    } else {
+//                        if (game.gameOver(game.getBoard()) == 'X' || game.gameOver(game.getBoard()) == 'O') {
+//                            gameStatus.setText("Winner is " + game.gameOver(game.getBoard()));
+//                        } else {
+//                            gameStatus.setText("Draw");
+//                        }
+//                    }
+//                }
+//            }
+            for (Player player : game.players) {
+                if (game.getCurrentPlayer() == player.getIdentifier()) {
+                    Player currentPlayer = player;
+                    if (currentPlayer.getClass() == LocalPlayer.class) {
+                        currentPlayer.placeStone(game.getBoard(), row, column, currentPlayer.getIdentifier());
+                        drawPlayer();
+                        if (game.gameOver(game.getBoard()) == 'N') {
+                            game.changePlayer();
                         } else {
-                            gameStatus.setText("Draw");
+                            if (game.gameOver(game.getBoard()) == 'X' || game.gameOver(game.getBoard()) == 'O') {
+                                gameStatus.setText("Winner is " + game.gameOver(game.getBoard()));
+                            } else {
+                                gameStatus.setText("Draw");
+                            }
+                        }
+                    } else {
+                        TemporaryPlacement test = currentPlayer.placeStone(game.getBoard());
+                        drawPlayer((byte) test.row, (byte) test.column);
+                        if (game.gameOver(game.getBoard()) == 'N') {
+                            game.changePlayer();
+                        } else {
+                            if (game.gameOver(game.getBoard()) == 'X' || game.gameOver(game.getBoard()) == 'O') {
+                                gameStatus.setText("Winner is " + game.gameOver(game.getBoard()));
+                            } else {
+                                gameStatus.setText("Draw");
+                            }
                         }
                     }
                 }

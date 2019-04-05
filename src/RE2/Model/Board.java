@@ -1,5 +1,9 @@
 package RE2.Model;
 
+import RE2.Model.Rules.Rules;
+import RE2.Model.Stone.Empty;
+import RE2.Model.Stone.Stone;
+
 public class Board {
 
     public static byte size;
@@ -14,7 +18,7 @@ public class Board {
 
     }
 
-    boolean isEmpty(byte row, byte column) {
+    public boolean isEmpty(byte row, byte column) {
         return (tiles[row][column].getClass() == Empty.class);
     }
 
@@ -23,10 +27,10 @@ public class Board {
     }
 
     public boolean set(Stone stone) {
-        if (tiles[stone.x][stone.y].getClass() != Empty.class) {
+        if (tiles[stone.getX()][stone.getY()].getClass() != Empty.class) {
             return false;
         } else {
-            tiles[stone.x][stone.y] = stone;
+            tiles[stone.getX()][stone.getY()] = stone;
             return true;
         }
     }

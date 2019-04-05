@@ -1,8 +1,5 @@
 package RE2;
 
-import RE2.Model.Board;
-import RE2.Model.TicTacToe;
-import RE2.Model.TicTacToeStone;
 import RE2.View.TicTacToeView;
 
 import static javafx.application.Application.launch;
