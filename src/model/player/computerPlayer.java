@@ -8,9 +8,11 @@ import java.util.ArrayList;
 public class computerPlayer implements player {
 
     private final byte ID;
+    private final byte enemyID; // a variable to recognize the enemy on the playing field
 
     public computerPlayer(byte ID) {
         this.ID = ID;
+        this.enemyID = (ID == 1) ? (byte) 2 : (byte) 1;
     }
 
 
@@ -80,7 +82,7 @@ public class computerPlayer implements player {
                     if (player == ID) {
                         // If player is AI score positively
                         // Todo: Implement a method to receive ID of opponent
-                        move.score = getBestMove(field, rules, (byte) 1, counter).score - counter;
+                        move.score = getBestMove(field, rules, enemyID, counter).score - counter;
                     } else {
                         // Else score negatively
                         move.score = counter + getBestMove(field, rules, ID, counter).score;
