@@ -34,6 +34,7 @@ public class computerPlayer implements player {
     }
 
     public byte[] takeTurn(playingField field, gameRules rules) {
+        System.out.println("Computer player has been given a turn");
         // Counter to count the depth of recursion
         int counter = 0;
         // Byte[] to return
@@ -48,15 +49,8 @@ public class computerPlayer implements player {
     }
 
     TemporaryMove getBestMove(playingField field, gameRules rules, byte player, int counter) {
-        // Not implemented as of now, getGameStatus() should return:
-        // Draw = 0 // not true, 0 means that nobody has won and the game may not have been finished
-        // Computer win = 1
-        // Human win = 2
-        // Network win = 3
-        // Todo: Implement method to receive game result
         if (rules.gameFinished(field)) {
             byte winner = rules.getGameStatus(field);
-            System.out.println("Winner: " + winner);
             if (winner == this.ID) {
                 return new TemporaryMove(10);
             } else if (winner >= 1) {
@@ -73,7 +67,6 @@ public class computerPlayer implements player {
         for (byte row = 0; row < field.getSize(); ++row) {
             for (byte column = 0; column < field.getSize(); column++) {
                 if (field.tileIsEmpty(row, column)) {
-                    System.out.println("found an empty spot");
                     // Create a temporary move
                     TemporaryMove move = new TemporaryMove(row, column);
                     // Fill temporary move
@@ -94,7 +87,6 @@ public class computerPlayer implements player {
                 }
             }
         }
-        System.out.println(counter);
 
         int bestMove = 0;
         if (player == ID) {
