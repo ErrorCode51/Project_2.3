@@ -18,23 +18,36 @@ public class TicTacToe implements Game {
 
     @Override
     public void run() {
-        Player playerOne = new ArtificialPlayer('X');
-        Player playerTwo = new ArtificialPlayer('O');
+        // Player playerOne = new ArtificialPlayer('X');
+        // Player playerTwo = new ArtificialPlayer('O');
+
+        Player playerOne = new LocalPlayer('X');
+        Player playerTwo = new LocalPlayer('O');
 
         currentPlayer = 'X';
 
-        board.printBoard();
+//        board.printBoard();
+//
+//        while (flag) {
+//            Player player = (currentPlayer == 'X') ? playerOne : playerTwo;
+//            TemporaryPlacement placement = player.placeStone(board);
+//            board.printBoard();
+//            this.changePlayer();
+//            if (board.gameOver(board) != TicTacToeRules.ONGOING) {
+//                flag = false;
+//            }
+//        }
 
-        while (flag) {
-            Player player = (currentPlayer == 'X') ? playerOne : playerTwo;
-            TemporaryPlacement placement = player.placeStone(board);
-            board.printBoard();
-            this.changePlayer();
-            if (board.gameOver(board) != TicTacToeRules.ONGOING) {
-                flag = false;
-            }
-        }
 
+
+    }
+
+    public Board getBoard() {
+        return board;
+    }
+
+    public char gameOver(Board board) {
+        return this.board.gameOver(board);
     }
 
     public char getCurrentPlayer() {
@@ -42,6 +55,7 @@ public class TicTacToe implements Game {
     }
 
     public void changePlayer() {
+        board.gameOver(board);
         currentPlayer = (currentPlayer == 'X') ? 'O' : 'X';
     }
 

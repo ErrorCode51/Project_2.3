@@ -22,9 +22,13 @@ public class Board {
         return tiles[row][column];
     }
 
-    public void set(Stone stone) {
-        tiles[stone.x][stone.y] = stone;
-
+    public boolean set(Stone stone) {
+        if (tiles[stone.x][stone.y].getClass() != Empty.class) {
+            return false;
+        } else {
+            tiles[stone.x][stone.y] = stone;
+            return true;
+        }
     }
 
     public void remove(byte row, byte column) {

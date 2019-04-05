@@ -1,8 +1,8 @@
 package RE2.View;
 
 import RE2.Model.TicTacToe;
+import RE2.Model.TicTacToeStone;
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
@@ -13,12 +13,6 @@ import javafx.scene.shape.Ellipse;
 import javafx.scene.shape.Line;
 import javafx.stage.Stage;
 
-
-/*import model.playingField.playingField;
-import controller.playerInputObserver.playerInputSubject;
-import model.game;
-import view.setPlayerHelper;*/
-
 public class TicTacToeView extends Application {
 
     private Cell[][] cell = new Cell[3][3];
@@ -28,16 +22,16 @@ public class TicTacToeView extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         GridPane pane = new GridPane();
-        for (byte i = 0; i < 3; i++){
-            for (byte j = 0; j < 3; j++){
-                pane.add(cell[i][j] = new Cell(i,j), j,i);
+        for (byte row = 0; row < 3; row++) {
+            for (byte column = 0; column < 3; column++) {
+                pane.add(cell[row][column] = new Cell(row, column), column, row);
             }
         }
         BorderPane borderPane = new BorderPane();
         borderPane.setCenter(pane);
         borderPane.setBottom(gameStatus);
 
-        Scene scene = new Scene(borderPane, 350,350);
+        Scene scene = new Scene(borderPane, 350, 350);
         primaryStage.setTitle("Tic-tac-toe");
         primaryStage.setScene(scene);
         primaryStage.show();
@@ -53,14 +47,20 @@ public class TicTacToeView extends Application {
         private byte row;
         private byte column;
 
-        private char player = 0;
 
         public Cell(byte row, byte column) {
+
             this.row = row;
             this.column = column;
             this.setPrefSize(300, 300);
             setStyle("-fx-border-color: black");
             this.setOnMouseClicked(e -> handleMouseClick());
+
+        }
+
+        protected boolean placeStone() {
+            TicTacToeStone stone = new TicTacToeStone(row, column, game.getCurrentPlayer());
+            return game.getBoard().set(stone);
         }
 
         protected void drawPlayer() {
@@ -76,8 +76,7 @@ public class TicTacToeView extends Application {
                 line2.endXProperty().bind(this.widthProperty().subtract(10));
 
                 this.getChildren().addAll(line1, line2);
-            }
-            else if (game.getCurrentPlayer() == 'O') {
+            } else if (game.getCurrentPlayer() == 'O') {
                 Ellipse ellipse = new Ellipse(this.getWidth() / 2,
                         this.getHeight() / 2, this.getWidth() / 2 - 10,
                         this.getHeight() / 2 - 10);
@@ -97,8 +96,21 @@ public class TicTacToeView extends Application {
         }
 
         private void handleMouseClick() {
-            drawPlayer();
-            game.changePlayer();
+            //Todo: Clean this.
+            if (game.gameOver(game.getBoard()) == 'N') {
+                if (placeStone()) {
+                    drawPlayer();
+                    if (game.gameOver(game.getBoard()) == 'N') {
+                        game.changePlayer();
+                    } else {
+                        if (game.gameOver(game.getBoard()) == 'X' || game.gameOver(game.getBoard()) == 'O') {
+                            gameStatus.setText("Winner is " + game.gameOver(game.getBoard()));
+                        } else {
+                            gameStatus.setText("Draw");
+                        }
+                    }
+                }
+            }
         }
     }
 }
