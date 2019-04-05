@@ -20,26 +20,34 @@ public class playingField {
         return size;
     }
 
-    public void setTile(byte x, byte y, byte playerNr) {
+    public boolean setTile(byte x, byte y, byte playerNr) {
         if (x < this.size && y < this.size && x >= 0 && y >= 0){
             if (this.tiles[x][y] == 0) {
                 if (playerNr == 1 || playerNr == 2) {
                     this.tiles[x][y] = playerNr;
+                    return true;
                 }
                 else {
                     System.err.println("Error: That's not a valid player number");
+                    return false;
                 }
             }
             else {
                 System.err.println("Error: That tile is already taken");
+                return false;
             }
         }
         else {
             System.err.println("Error: That tile does not exists");
+            return false;
         }
     }
 
-    public boolean tileIsEmplty(byte row, byte column) {
+    public void zeroTile(byte x, byte y) {
+        this.tiles[x][y] = 0;
+    }
+
+    public boolean tileIsEmpty(byte row, byte column) {
         return (this.tiles[row][column] == 0);
     }
 

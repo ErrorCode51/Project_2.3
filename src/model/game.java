@@ -1,6 +1,8 @@
 package model;
 
 import model.gameRules.gameRules;
+import model.gameRules.ticTacToeRules;
+import model.player.computerPlayer;
 import model.player.humanPlayer;
 import model.player.player;
 import model.playingField.playingField;
@@ -21,42 +23,56 @@ public class game implements Runnable {
         field = new playingField(3);
         players = new player[2];
         this.view = view;
+        this.daRules = new ticTacToeRules();
 
-        players[0] = new humanPlayer();
-        players[1] = new humanPlayer();
+        players[0] = new humanPlayer((byte) 1);
+        players[1] = new computerPlayer((byte) 2);
     }
 
 
     public void run() {
         System.out.println("run() has been called");
-        while (true) {
+        while (daRules.gameFinished(field)) {
             try {
-                if (this.view.isReady()) {
+                if (true) {
                     break;
                 }
             }
             catch (Exception e) {}
         }
         System.out.println("TicTacToeView has been set up");
-        while (true) {
-            handleTurn(players[0]);
-            view.setPlayingfield(field);
-            handleTurn(players[1]);
-            view.setPlayingfield(field);
+
+        byte settingPlayer = 1;
+        while (!daRules.gameFinished(field)) {
+            if (handleTurn(players[settingPlayer - 1])) {
+                view.setPlayingfield(field);
+                settingPlayer = daRules.getNextPlayer(settingPlayer, field);
+            }
+        }
+        switch (daRules.getGameStatus(field)) {
+            case 0:
+                System.err.println("It's a draw");
+                break;
+            case 1:
+                System.err.println(players[0] + " has won!!!");
+                break;
+            case 2:
+                System.err.println(players[1] + " has won!!!");
         }
     }
 
 
-    private void handleTurn(player player) {
+    private boolean handleTurn(player player) {
         byte[] set = player.takeTurn(field, daRules);
         try {
             if (set[0] < field.getSize() && set[1] < field.getSize()) {
-                field.setTile(set[0], set[1], (byte)(Arrays.asList(players).indexOf(player) +1));
+                return field.setTile(set[0], set[1], player.getID());
             }
         }
         catch (Exception e){
             System.err.println("Godverdomme Kyle, dat is geen zet");
         }
+        return false;
     }
 }
 

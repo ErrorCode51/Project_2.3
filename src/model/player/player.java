@@ -10,4 +10,6 @@ public interface player {
 
     public boolean isReady(); //returns a value indicating if the player is ready for the game to start
 
+    public byte getID();
+
 }

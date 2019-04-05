@@ -5,23 +5,27 @@ import model.playingField.playingField;
 
 public class networkPlayer implements player {
 
-    // Our AI needs to be able to differentiate between players.
-    // Temporary solution as of now:
-    // Computer = 1
-    // Human = 2
-    // Network = 3
-    public static final byte ID = 3;
+    private final byte ID;
+
+
     // Todo: Receive name from server
     public String name = "Jade";
+
+
+    public networkPlayer(byte ID) {
+        this.ID = ID;
+    }
+
+    public byte getID() {
+        return this.ID;
+    }
+
 
     @Override
     public String toString() {
         return name;
     }
 
-    public int getID() {
-        return ID;
-    }
 
     // What is this?
     public boolean isReady() {
