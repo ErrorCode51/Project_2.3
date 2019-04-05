@@ -13,14 +13,14 @@ import javafx.scene.shape.Ellipse;
 import javafx.scene.shape.Line;
 import javafx.stage.Stage;
 
-public class TicTacToeView extends Application {
+public class TicTacToeView extends Stage {
 
     private Cell[][] cell = new Cell[3][3];
     private Label gameStatus = new Label();
     private TicTacToe game;
 
-    @Override
-    public void start(Stage primaryStage) throws Exception {
+
+    public TicTacToeView() {
         GridPane pane = new GridPane();
         for (byte row = 0; row < 3; row++) {
             for (byte column = 0; column < 3; column++) {
@@ -32,10 +32,10 @@ public class TicTacToeView extends Application {
         borderPane.setBottom(gameStatus);
 
         Scene scene = new Scene(borderPane, 350, 350);
-        primaryStage.setTitle("Tic-tac-toe");
-        primaryStage.setScene(scene);
-        primaryStage.show();
-        primaryStage.setOnCloseRequest(e -> System.exit(0));
+        this.setTitle("Tic-tac-toe");
+        this.setScene(scene);
+        this.show();
+        //this.setOnCloseRequest(e -> System.exit(0));
 
         TicTacToe game = new TicTacToe();
         this.game = game;
