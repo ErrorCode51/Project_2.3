@@ -55,33 +55,28 @@ public class ArtificialPlayer extends Player {
         counter += 1;
         for (byte row = 0; row < board.getSize(); row++) {
             for (byte column = 0; column < board.getSize(); column++) {
-                if (board.get(row, column) == null) {
-                    createTemporaryPlacement(board, player, counter, placements, row, column);
-                }
-                if (board.get(row, column).getClass() == Empty.class) {
+                if (board.isEmpty(row, column)) {
                     createTemporaryPlacement(board, player, counter, placements, row, column);
                 }
             }
         }
-        TemporaryPlacement bestPlacement = null;
+        byte bestPlacement = 0;
         if (player == identifier) {
             int bestScore = -10;
-            for (TemporaryPlacement placement : placements) {
-                if (placement.score > bestScore) {
-                    bestPlacement = placement;
-                    bestScore = placement.score;
+            for (byte index = 0; index < placements.size(); index++)
+                if (placements.get(index).score > bestScore) {
+                    bestPlacement = index;
+                    bestScore = placements.get(index).score;
                 }
-            }
         } else {
             int bestScore = 10;
-            for (TemporaryPlacement placement : placements) {
-                if (placement.score < bestScore) {
-                    bestPlacement = placement;
-                    bestScore = placement.score;
+            for (byte index = 0; index < placements.size(); index++)
+                if (placements.get(index).score < bestScore) {
+                    bestPlacement = index;
+                    bestScore = placements.get(index).score;
                 }
-            }
         }
-        return bestPlacement;
+        return placements.get(bestPlacement);
     }
 
     private void createTemporaryPlacement(Board board, char player, byte counter, ArrayList<TemporaryPlacement> placements, byte row, byte column) {

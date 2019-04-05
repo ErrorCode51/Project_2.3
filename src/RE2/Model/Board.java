@@ -1,6 +1,6 @@
 package RE2.Model;
 
-public class Board implements Cloneable {
+public class Board {
 
     public static byte size;
 
@@ -14,9 +14,8 @@ public class Board implements Cloneable {
 
     }
 
-    @Override
-    public Object clone() throws CloneNotSupportedException {
-        return super.clone();
+    boolean isEmpty(byte row, byte column) {
+        return (tiles[row][column].getClass() == Empty.class);
     }
 
     public Stone get(byte row, byte column) {
@@ -30,7 +29,6 @@ public class Board implements Cloneable {
 
     public void remove(byte row, byte column) {
         tiles[row][column] = new Empty();
-        //tiles[row][column] = null;
     }
 
     public byte getSize() {
@@ -39,6 +37,11 @@ public class Board implements Cloneable {
 
     public void initialize(Rules rules) {
         this.rules = rules;
+        for (byte row = 0; row < size; row++){
+            for (byte column = 0; column < size; column++) {
+                tiles[row][column] = new Empty();
+            }
+        }
     }
 
     public char gameOver(Board board) {
