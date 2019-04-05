@@ -39,7 +39,11 @@ public class playingField {
         }
     }
 
-    public boolean tileIsEmplty(byte row, byte column) {
+    public void zeroTile(byte x, byte y) {
+        this.tiles[x][y] = 0;
+    }
+
+    public boolean tileIsEmpty(byte row, byte column) {
         return (this.tiles[row][column] == 0);
     }
 

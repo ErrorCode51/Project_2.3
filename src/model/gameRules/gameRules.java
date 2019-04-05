@@ -12,4 +12,6 @@ public interface gameRules {
     public boolean boardIsFull(playingField field);
 
     public boolean gameFinished(playingField field);
+
+    public byte getNextPlayer(byte lastPlayerID, playingField field);
 }

@@ -7,12 +7,13 @@ import java.util.ArrayList;
 
 public class computerPlayer implements player {
 
-    // Our AI needs to be able to differentiate between players.
-    // Temporary solution as of now:
-    // Computer = 1
-    // Human = 2
-    // Network = 3
-    public static final byte ID = 1;
+    private final byte ID;
+
+    public computerPlayer(byte ID) {
+        this.ID = ID;
+    }
+
+
     // Todo: Receive name from server
     public String name = "Sub Zero";
 
@@ -21,7 +22,7 @@ public class computerPlayer implements player {
         return name;
     }
 
-    public int getID() {
+    public byte getID() {
         return ID;
     }
 
@@ -46,25 +47,31 @@ public class computerPlayer implements player {
 
     TemporaryMove getBestMove(playingField field, gameRules rules, byte player, int counter) {
         // Not implemented as of now, getGameStatus() should return:
-        // Draw = 0
+        // Draw = 0 // not true, 0 means that nobody has won and the game may not have been finished
         // Computer win = 1
         // Human win = 2
         // Network win = 3
         // Todo: Implement method to receive game result
-        byte winner = rules.getGameStatus(field);
-        if (winner == ID) {
-            return new TemporaryMove(10);
-        } else if (winner > 1) {
-            return new TemporaryMove(-10);
-        } else if (winner == 0) {
-            return new TemporaryMove(0);
+        if (rules.gameFinished(field)) {
+            byte winner = rules.getGameStatus(field);
+            System.out.println("Winner: " + winner);
+            if (winner == this.ID) {
+                return new TemporaryMove(10);
+            } else if (winner >= 1) {
+                return new TemporaryMove(-10);
+            } else {
+                return new TemporaryMove(0);
+            }
         }
+
+
 
         ArrayList<TemporaryMove> moves = new ArrayList<>();
         counter += 1;
         for (byte row = 0; row < field.getSize(); ++row) {
             for (byte column = 0; column < field.getSize(); column++) {
-                if (field.tileIsEmplty(row, column)) {
+                if (field.tileIsEmpty(row, column)) {
+                    System.out.println("found an empty spot");
                     // Create a temporary move
                     TemporaryMove move = new TemporaryMove(row, column);
                     // Fill temporary move
@@ -73,18 +80,19 @@ public class computerPlayer implements player {
                     if (player == ID) {
                         // If player is AI score positively
                         // Todo: Implement a method to receive ID of opponent
-                        move.score = getBestMove(field, rules, Player.HUMAN, counter).score - counter;
+                        move.score = getBestMove(field, rules, (byte) 1, counter).score - counter;
                     } else {
                         // Else score negatively
                         move.score = counter + getBestMove(field, rules, ID, counter).score;
                     }
                     // Remove temporary move
-                    field.setTile(row, column, (byte) 0);
+                    field.zeroTile(row, column);
                     // Add temporary move to list
                     moves.add(move);
                 }
             }
         }
+        System.out.println(counter);
 
         int bestMove = 0;
         if (player == ID) {

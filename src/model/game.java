@@ -1,6 +1,8 @@
 package model;
 
 import model.gameRules.gameRules;
+import model.gameRules.ticTacToeRules;
+import model.player.computerPlayer;
 import model.player.humanPlayer;
 import model.player.player;
 import model.playingField.playingField;
@@ -21,9 +23,10 @@ public class game implements Runnable {
         field = new playingField(3);
         players = new player[2];
         this.view = view;
+        this.daRules = new ticTacToeRules();
 
-        players[0] = new humanPlayer();
-        players[1] = new humanPlayer();
+        players[0] = new humanPlayer((byte) 1);
+        players[1] = new computerPlayer((byte) 2);
     }
 
 
@@ -51,7 +54,7 @@ public class game implements Runnable {
         byte[] set = player.takeTurn(field, daRules);
         try {
             if (set[0] < field.getSize() && set[1] < field.getSize()) {
-                field.setTile(set[0], set[1], (byte)(Arrays.asList(players).indexOf(player) +1));
+                field.setTile(set[0], set[1], player.getID());
             }
         }
         catch (Exception e){

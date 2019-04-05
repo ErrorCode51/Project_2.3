@@ -44,7 +44,7 @@ public class ticTacToeRules implements gameRules {
             if (tiles[i][0] == tiles[i][1] && tiles[i][1] == tiles[i][2] && tiles[i][0] != 0) {
                 return tiles[i][0];
             }
-            // check the collums to see if there are three of the same symbols in a line
+            // check the columns to see if there are three of the same symbols in a line
             if (tiles[0][i] == tiles[1][i] && tiles[1][i] == tiles[2][i] && tiles[0][i] != 0){
                 return tiles[0][i];
             }
@@ -62,6 +62,18 @@ public class ticTacToeRules implements gameRules {
     }
 
     public boolean gameFinished(playingField field){
-        return (boardIsFull(field) || getGameStatus(field) != 0);
+        if (boardIsFull(field) || getGameStatus(field) != 0) {
+            return true;
+        }
+        return false;
+    }
+
+    public byte getNextPlayer(byte lastPlayerID, playingField field) {
+        if (lastPlayerID == 1) {
+            return 2;
+        } else if (lastPlayerID == 2) {
+            return 1;
+        }
+        return 0;
     }
 }
