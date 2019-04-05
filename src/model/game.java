@@ -25,7 +25,7 @@ public class game implements Runnable {
         this.view = view;
         this.daRules = new ticTacToeRules();
 
-        players[0] = new computerPlayer((byte) 1);
+        players[0] = new humanPlayer((byte) 1);
         players[1] = new computerPlayer((byte) 2);
     }
 
@@ -44,9 +44,10 @@ public class game implements Runnable {
 
         byte settingPlayer = 1;
         while (!daRules.gameFinished(field)) {
-            handleTurn(players[settingPlayer - 1]);
-            view.setPlayingfield(field);
-            settingPlayer = daRules.getNextPlayer(settingPlayer, field);
+            if (handleTurn(players[settingPlayer - 1])) {
+                view.setPlayingfield(field);
+                settingPlayer = daRules.getNextPlayer(settingPlayer, field);
+            }
         }
         switch (daRules.getGameStatus(field)) {
             case 0:
@@ -61,16 +62,17 @@ public class game implements Runnable {
     }
 
 
-    private void handleTurn(player player) {
+    private boolean handleTurn(player player) {
         byte[] set = player.takeTurn(field, daRules);
         try {
             if (set[0] < field.getSize() && set[1] < field.getSize()) {
-                field.setTile(set[0], set[1], player.getID());
+                return field.setTile(set[0], set[1], player.getID());
             }
         }
         catch (Exception e){
             System.err.println("Godverdomme Kyle, dat is geen zet");
         }
+        return false;
     }
 }
 
