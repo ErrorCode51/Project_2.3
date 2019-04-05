@@ -24,7 +24,7 @@ public class ServerController implements Runnable{
     private String[] splittedMessage;
     private ClientCommands clientcom = new ClientCommands();
 
-//Open a socket connection to the server
+//Open a socket connection to the server if possible
     private void connectToServer(){
        try{
            running = true;
@@ -39,9 +39,8 @@ public class ServerController implements Runnable{
        }
     }
 
-
+//        TODO: Make the client do login and sub instead of hardcode, hardcode only for testing
     public void run()  {
-        System.out.println("Creating socket to '" + host + "' on port " + portNumber);
         connectToServer();
         clientcom.loginToServer("kevin",out);
         clientcom.subTogame("Tic-tac-toe",out);
@@ -51,8 +50,7 @@ public class ServerController implements Runnable{
     }
 
 //    server message handling
-    // TODO: 03/04/2019 Make this its own class
-    // TODO: 03/04/2019 handle events with AI
+// TODO: 03/04/2019 handle events with AI
     private void handleMessage(){
         try {
             String servmessage = br.readLine();
@@ -62,7 +60,7 @@ public class ServerController implements Runnable{
             }
 
             splittedMessage = servmessage.split("\\s+");
-            System.out.println(Arrays.toString(splittedMessage));
+            //System.out.println(Arrays.toString(splittedMessage));
 
             switch (splittedMessage[0]){
                 case "OK":
@@ -82,19 +80,23 @@ public class ServerController implements Runnable{
     }
 
 //    Generate the maps given in the servermessage
-//    Uses the guava Splitter library to split the map into keys and values
+//    Uses the guava library to split the map into keys and values
     private void genMap(String serverMessage){
 
         String tempString = serverMessage.substring(serverMessage.indexOf("{"));
-
-        tempString = tempString.replaceAll("[{}\"]", "");
+        tempString = tempString.trim();
+//        Trims the following: { } " and spaces
+        tempString = tempString.replaceAll("[{}\" ]", "");
 
         Map<String, String> splitMap = Splitter.on(",").withKeyValueSeparator(":").split(tempString);
 
 //            TEST TODO: REMOVE WHEN DONE
         for ( String key : splitMap.keySet()) {
-            System.out.println("The value that belongs to " + key + " is " + splitMap.get(key));
+            System.out.println(key + " = " + splitMap.get(key));
+           // System.out.println(splitMap.keySet());
         }
+        System.out.println(splitMap.get("MOVE"));
+
 //            TEST END
     }
 
@@ -103,7 +105,7 @@ public class ServerController implements Runnable{
     private void handleSrv(String typeOfMessage){
             switch (typeOfMessage){
                 case "HELP":
-                    System.out.println("Help was called");
+                        System.out.println("Help was called");
                     break;
                 case "GAME":
                     System.out.println("game was called");
@@ -142,5 +144,4 @@ public class ServerController implements Runnable{
                 break;
         }
     }
-
 }
