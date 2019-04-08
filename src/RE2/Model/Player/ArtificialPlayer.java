@@ -6,7 +6,6 @@ import RE2.Model.Rules.Rules;
 import RE2.Model.Stone.TicTacToeStone;
 
 import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
 
 public class ArtificialPlayer implements Player {
 
@@ -31,14 +30,14 @@ public class ArtificialPlayer implements Player {
     @Override
     public byte[] placeStone(Board board, Rules rules) {
         byte counter = 0;
-        TemporaryPlacement temporaryPlacement = this.findBestPlacement(board, rules, identifier, counter);
+        TemporaryPlacement temporaryPlacement = this.findBestPlacement(board, rules, getIdentifier(), counter);
         byte[] placement = {(byte) temporaryPlacement.row, (byte) temporaryPlacement.column};
         return placement;
     }
 
     TemporaryPlacement findBestPlacement(Board board, Rules rules, char identifier, byte counter) {
         char winner = rules.gameOver(board);
-        if (winner == identifier) {
+        if (winner == getIdentifier()) {
             return new TemporaryPlacement(10);
         } else if (winner == 'D') {
             return new TemporaryPlacement(0);
@@ -55,7 +54,7 @@ public class ArtificialPlayer implements Player {
             }
         }
         byte bestPlacement = 0;
-        if (identifier == this.identifier) {
+        if (identifier == getIdentifier()) {
             int bestScore = -10;
             for (byte index = 0; index < placements.size(); index++)
                 if (placements.get(index).score > bestScore) {
@@ -78,10 +77,10 @@ public class ArtificialPlayer implements Player {
                                           ArrayList<TemporaryPlacement> placements, byte row, byte column) {
         TemporaryPlacement placement = new TemporaryPlacement(row, column);
         board.set(new TicTacToeStone(row, column, identifier));
-        if (identifier == this.identifier) {
+        if (identifier == getIdentifier()) {
             placement.score = findBestPlacement(board, rules, getOpposingIdentifier(), counter).score - counter;
         } else {
-            placement.score = counter + findBestPlacement(board, rules, identifier, counter).score;
+            placement.score = counter + findBestPlacement(board, rules, getIdentifier(), counter).score;
         }
         board.remove(row, column);
         placements.add(placement);
@@ -92,13 +91,17 @@ public class ArtificialPlayer implements Player {
         // Unsure if this method is needed in both TicTacToe and Othello, made if future-proof non the less
         char opponent = ' ';
         switch (identifier) {
-            case 'X': opponent = 'O';
+            case 'X':
+                opponent = 'O';
                 break;
-            case 'O': opponent = 'X';
+            case 'O':
+                opponent = 'X';
                 break;
-            case 'B': opponent = 'W';
+            case 'B':
+                opponent = 'W';
                 break;
-            case 'W': opponent = 'B';
+            case 'W':
+                opponent = 'B';
                 break;
         }
         return opponent;
