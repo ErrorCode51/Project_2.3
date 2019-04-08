@@ -7,7 +7,6 @@ public class userInputSubject {
     static ArrayList<userInputObserver> observers = new ArrayList<>();
 
     public static synchronized void subscribe(userInputObserver observer) {
-        System.out.println("Observer added");
         observers.add(observer);
     }
 
@@ -16,7 +15,6 @@ public class userInputSubject {
     }
 
     public static void notify(byte row, byte column) {
-        System.out.println(observers);
         for (userInputObserver observer : observers) {
             observer.notify(row, column);
         }

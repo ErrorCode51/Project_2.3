@@ -6,19 +6,19 @@ public class userInputHelper implements Runnable {
 
     byte row;
     byte column;
+    char identifier;
 
-    public userInputHelper(TicTacToeView view, byte row, byte column) {
+    public userInputHelper(TicTacToeView view, byte row, byte column, char identifier) {
 
         this.view = view;
 
         this.row = row;
         this.column = column;
-        System.out.println("UIH created");
+        this.identifier = identifier;
 
     }
 
     public void run() {
-        System.out.println("RUN!");
-        this.view.getCell()[this.row][this.column].drawPlayer();
+        view.getCell()[row][column].setPlayer(identifier);
     }
 }

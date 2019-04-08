@@ -21,10 +21,7 @@ public class TicTacToeView extends Application {
 
     private final Cell[][] cell = new Cell[3][3];
     private final Label gameStatus = new Label();
-    private boolean ready = false;
     private TicTacToe game;
-    // Todo: fix final bug; AI cannot play without user input.
-    private boolean humanInteraction = false;
 
     @Override
     public void start(Stage primaryStage) {
@@ -39,37 +36,26 @@ public class TicTacToeView extends Application {
         borderPane.setBottom(gameStatus);
 
         Scene scene = new Scene(borderPane, 350, 350);
-        primaryStage.setTitle("Tic-tac-toe");
+        primaryStage.setTitle("Noughts and Crosses");
         primaryStage.setScene(scene);
         primaryStage.show();
         primaryStage.setOnCloseRequest(e -> System.exit(0));
 
-        // Refactor: start() Done.
         game = new TicTacToe(this);
         Thread thread = new Thread(game);
         thread.start();
-
-        ready = true;
-
-        // for (Player player : game.players) {
-        //     if (player.getClass() == LocalPlayer.class) {
-        //         humanInteraction = true;
-        //     }
-        // }
-
     }
 
     public void setBoard(TicTacToeBoard board) {
         Stone tiles[][] = board.getTiles();
         for (byte row = 0; row < tiles.length; row++) {
             for (byte column = 0; column < tiles[row].length; column++) {
-                Platform.runLater(new userInputHelper(this, row, column));
+                Platform.runLater(new userInputHelper(this, row, column, tiles[row][column].getIdentifier()));
             }
         }
     }
 
     public Cell[][] getCell() {
-        System.out.println("getCell: " + cell);
         return cell;
     }
 
@@ -91,12 +77,14 @@ public class TicTacToeView extends Application {
 
         }
 
-        public char getPlayer() {
-            return player;
+        @Override
+        public String toString() {
+            return "Cell at [" + this.row + ", " + this.column + "]";
         }
 
         public void setPlayer(char player) {
             this.player = player;
+            drawPlayer();
         }
 
         private Ellipse drawCircle() {
@@ -133,57 +121,17 @@ public class TicTacToeView extends Application {
         }
 
         void drawPlayer() {
-            System.out.println("Draw is called");
-            if (game.getCurrentPlayer() == 'X') {
+            if (this.player == 'X') {
                 this.getChildren().addAll(drawCross()[0], drawCross()[1]);
-            } else if (game.getCurrentPlayer() == 'O') {
+            } else if (this.player == 'O') {
                 getChildren().add(drawCircle());
             }
         }
 
-        void drawPlayer(byte row, byte column) {
-            if (game.getCurrentPlayer() == 'X') {
-                cell[row][column].getChildren().addAll(drawCross()[0], drawCross()[1]);
-            } else if (game.getCurrentPlayer() == 'O') {
-                cell[row][column].getChildren().add(drawCircle());
-            }
-        }
-
         private void handleMouseClick() {
-//            if (game.gameOver(game.getBoard()) == 'N') {
-//                for (Player player : game.players) {
-//                    if (game.getCurrentPlayer() == player.getIdentifier()) {
-//                        if (player.getClass() == LocalPlayer.class) {
-//                            if (player.placeStone(game.getBoard(), row, column, player.getIdentifier())) {
-//                                player.placeStone(game.getBoard(), row, column, player.getIdentifier());
-//                                drawPlayer();
-//                                boardState();
-//                            } else {
-//                                System.out.println("Invalid placement!");
-//                            }
-//                        } else {
-//                            TemporaryPlacement test = player.placeStone(game.getBoard());
-//                            drawPlayer((byte) test.row, (byte) test.column);
-//                            boardState();
-//                        }
-//                    }
-//                }
-//            }
-            System.out.println("CLICK " + row + ", " + column);
             userInputSubject.notify(row, column);
         }
 
-        private void boardState() {
-            if (game.gameOver(game.getBoard()) == 'N') {
-                game.changePlayer();
-            } else {
-                if (game.gameOver(game.getBoard()) == 'X' || game.gameOver(game.getBoard()) == 'O') {
-                    gameStatus.setText("Winner is " + game.gameOver(game.getBoard()));
-                } else {
-                    gameStatus.setText("Draw");
-                }
-            }
-        }
     }
 }
 
