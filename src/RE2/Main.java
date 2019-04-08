@@ -7,7 +7,8 @@ import static javafx.application.Application.launch;
 class Main {
 
     public static void main(String[] args) {
-        launch(TicTacToeView.class);
+        // Refactor: Done
+        launch(TicTacToeView.class, args);
     }
 
 }
