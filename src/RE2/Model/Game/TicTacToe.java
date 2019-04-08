@@ -2,7 +2,6 @@ package RE2.Model.Game;
 
 import RE2.Model.Board.Board;
 import RE2.Model.Board.TicTacToeBoard;
-import RE2.Model.Container.TemporaryPlacement;
 import RE2.Model.Player.ArtificialPlayer;
 import RE2.Model.Player.LocalPlayer;
 import RE2.Model.Player.Player;
@@ -42,8 +41,8 @@ public class TicTacToe implements Game {
                 if (true) {
                     break;
                 }
+            } catch (Exception e) {
             }
-            catch (Exception e) {}
         }
         currentPlayer = 'X';
         while (rules.gameOver(board) == 'N') {
@@ -72,8 +71,7 @@ public class TicTacToe implements Game {
                 // System.out.println(stone);
                 return board.set(stone);
             }
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             System.err.println("Invalid placement");
         }
         return false;
