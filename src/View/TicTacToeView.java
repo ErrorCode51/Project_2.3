@@ -41,7 +41,7 @@ public class TicTacToeView extends Application {
         primaryStage.show();
         primaryStage.setOnCloseRequest(e -> System.exit(0));
 
-        game = new TicTacToe(this);
+        game = new TicTacToe(this, true);
         Thread thread = new Thread(game);
         thread.start();
     }

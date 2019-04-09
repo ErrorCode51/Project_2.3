@@ -16,7 +16,7 @@ import java.util.Random;
 // TODO: 03/04/2019 clean this mess up and make handlers for the switch cases
 
 public class ServerController implements Runnable{
-    private final String host= "localhost";
+    private final String host = "145.37.149.79";
     private final int portNumber = 7789;
     private PrintWriter out;
     private BufferedReader br;
@@ -25,9 +25,11 @@ public class ServerController implements Runnable{
     private String[] splittedMessage;
     Map<String, String> splitMap;
     private ClientCommands clientcom = new ClientCommands();
+    private String playerToMove;
 
 //Open a socket connection to the server if possible
     private void connectToServer(){
+        System.out.println("ServerController constructor called");
        try{
            running = true;
            socket = new Socket(host, portNumber);
@@ -43,6 +45,7 @@ public class ServerController implements Runnable{
 
 //        TODO: Make the client do login and sub instead of hardcode, hardcode only for testing
     public void run()  {
+        System.out.println("ServerController run() called");
         connectToServer();
         clientcom.loginToServer("kevin",out);
         clientcom.subTogame("Tic-tac-toe",out);
@@ -125,15 +128,16 @@ public class ServerController implements Runnable{
     private void gamehandler(String gameOption){
         switch(gameOption){
             case "MATCH":
+                this.playerToMove = splitMap.get("PLAYERTOMOVE");
                 System.out.println("match was called");
                 break;
             case "YOURTURN":
-                System.out.println("yourturn was called");
-                // TODO: 03/04/2019  Add code for doing the move ( and remove the random one, pls)
-                Random rand = new Random();
-                int n = rand.nextInt(8);
-                String str = Integer.toString(n);
-                clientcom.move(str,out);
+//                System.out.println("yourturn was called");
+//                // TODO: 03/04/2019  Add code for doing the move ( and remove the random one, pls)
+//                Random rand = new Random();
+//                int n = rand.nextInt(8);
+//                String str = Integer.toString(n);
+//                clientcom.move(str,out);
                 break;
             case "WIN":
                 System.out.println("You've won!");
@@ -149,5 +153,15 @@ public class ServerController implements Runnable{
                 NetworkInputSubject.notify(Byte.parseByte(splitMap.get("MOVE")));
                 break;
         }
+    }
+
+
+    public void sendMove(byte[] move) {
+        clientcom.move(Integer.toString((move[0] * 3) + move[1]), out);
+    }
+
+
+    public String getPlayerToMove() {
+        return this.playerToMove;
     }
 }
