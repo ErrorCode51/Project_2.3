@@ -45,11 +45,11 @@ public class TicTacToe implements Game {
             }
 
             if (controllertje.getPlayerToMove().equals("kevin")) {
-                players[0] = new LocalPlayer('X');
+                players[0] = new ArtificialPlayer('X');
                 players[1] = new NetworkPlayer('O');
             } else {
                 players[0] = new NetworkPlayer('X');
-                players[1] = new LocalPlayer('O');
+                players[1] = new ArtificialPlayer('O');
             }
         }
     }

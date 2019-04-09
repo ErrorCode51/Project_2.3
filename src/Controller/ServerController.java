@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.Arrays;
 import java.util.Map;
 
 import Controller.NetworkInputObserver.NetworkInputSubject;
@@ -65,7 +66,7 @@ public class ServerController implements Runnable{
             }
 
             splittedMessage = servmessage.split("\\s+");
-            //System.out.println(Arrays.toString(splittedMessage));
+            System.out.println(Arrays.toString(splittedMessage));
 
             switch (splittedMessage[0]){
                 case "OK":

@@ -30,19 +30,19 @@ public class NetworkPlayer implements Player, NetworkInputObserver {
 
         NetworkInputSubject.subscribe(this);
 
-        while (this.row == -1 && this.column == -1) {
+        while (this.row == -1 || this.column == -1) {
             Thread.yield();
         }
-        System.out.println("NetworkPlayer's move: " + new byte[]{row, column});
+
+        System.out.println("NetworkPlayer's move: " + row + ", " + column);
         NetworkInputSubject.unsubscribe(this);
         return new byte[]{this.row, this.column};
     }
 
 
     public void notify(byte tile) {
-        if (tile >= this.boardSize) {
-            this.row = (byte)(tile / this.boardSize);
-        }
+        System.err.println(this + " was notified");
+        this.row = (byte) (tile / this.boardSize);
         this.column = (byte)(tile % this.boardSize);
     }
 
