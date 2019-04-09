@@ -3,16 +3,16 @@ package RE2.Model.Player;
 import RE2.Controller.userInputObserver.userInputObserver;
 import RE2.Controller.userInputObserver.userInputSubject;
 import RE2.Model.Board.Board;
-import RE2.Model.Container.TemporaryPlacement;
 import RE2.Model.Rules.Rules;
+import RE2.Model.Stone.OthelloStone;
+import RE2.Model.Stone.Stone;
 import RE2.Model.Stone.TicTacToeStone;
 
 public class LocalPlayer implements Player, userInputObserver {
 
+    public char identifier;
     private byte row = -1;
     private byte column = -1;
-
-    public char identifier;
 
     public LocalPlayer(char identifier) {
 
@@ -47,11 +47,20 @@ public class LocalPlayer implements Player, userInputObserver {
     }
 
     public boolean placeStone(Board board, byte row, byte column, char identifier) {
+        System.out.println("placeStone is called");
         if (!board.isEmpty(row, column)) {
+            System.out.println("False");
             return false;
         } else {
-            TicTacToeStone stone = new TicTacToeStone(row, column, identifier);
-            board.set(stone);
+            if (identifier == 'X' || identifier == 'O') {
+                Stone stone = new TicTacToeStone(row, column, identifier);
+                board.set(stone);
+            }
+            if (identifier == 'B' || identifier == 'W') {
+                Stone stone = new OthelloStone(row, column, identifier);
+                board.set(stone);
+            }
+            System.out.println("True");
             return true;
         }
     }

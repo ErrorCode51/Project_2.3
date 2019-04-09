@@ -18,7 +18,7 @@ public abstract class View extends Application {
     protected Game game;
 
     public void setBoard(Board board) {
-        Stone tiles[][] = board.getTiles();
+        Stone[][] tiles = board.getTiles();
         for (byte row = 0; row < tiles.length; row++) {
             for (byte column = 0; column < tiles[row].length; column++) {
                 Platform.runLater(new userInputHelper(this, row, column, tiles[row][column].getIdentifier()));
@@ -65,6 +65,10 @@ public abstract class View extends Application {
                 this.getChildren().addAll(drawCross()[0], drawCross()[1]);
             } else if (this.player == 'O') {
                 getChildren().add(drawCircle());
+            } else if (this.player == 'B') {
+                this.getChildren().addAll(drawBlack());
+            } else if (this.player == 'W') {
+                getChildren().add(drawWhite());
             }
         }
 
@@ -82,6 +86,40 @@ public abstract class View extends Application {
                     this.heightProperty().divide(2).subtract(10));
             circle.setStroke(Color.BLACK);
             circle.setFill(Color.WHITE);
+            return circle;
+        }
+
+        private Ellipse drawWhite() {
+            Ellipse circle = new Ellipse(this.getWidth() / 2,
+                    this.getHeight() / 2, this.getWidth() / 2 - 10,
+                    this.getHeight() / 2 - 10);
+            circle.centerXProperty().bind(
+                    this.widthProperty().divide(2));
+            circle.centerYProperty().bind(
+                    this.heightProperty().divide(2));
+            circle.radiusXProperty().bind(
+                    this.widthProperty().divide(2).subtract(10));
+            circle.radiusYProperty().bind(
+                    this.heightProperty().divide(2).subtract(10));
+            circle.setStroke(Color.BLACK);
+            circle.setFill(Color.WHITE);
+            return circle;
+        }
+
+        private Ellipse drawBlack() {
+            Ellipse circle = new Ellipse(this.getWidth() / 2,
+                    this.getHeight() / 2, this.getWidth() / 2 - 10,
+                    this.getHeight() / 2 - 10);
+            circle.centerXProperty().bind(
+                    this.widthProperty().divide(2));
+            circle.centerYProperty().bind(
+                    this.heightProperty().divide(2));
+            circle.radiusXProperty().bind(
+                    this.widthProperty().divide(2).subtract(10));
+            circle.radiusYProperty().bind(
+                    this.heightProperty().divide(2).subtract(10));
+            circle.setStroke(Color.BLACK);
+            circle.setFill(Color.BLACK);
             return circle;
         }
 

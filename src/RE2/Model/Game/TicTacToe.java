@@ -56,10 +56,10 @@ public class TicTacToe implements Game {
                 System.err.println("It's a draw");
                 break;
             case 'X':
-                System.err.println(players[0] + " has won!!!");
+                System.err.println(getPlayerByIdentifier('X') + " has won!!!");
                 break;
             case 'O':
-                System.err.println(players[1] + " has won!!!");
+                System.err.println(getPlayerByIdentifier('O') + " has won!!!");
         }
     }
 
@@ -68,7 +68,6 @@ public class TicTacToe implements Game {
         try {
             if (placement[0] < board.getSize() && placement[1] < board.getSize()) {
                 Stone stone = new TicTacToeStone(placement[0], placement[1], player.getIdentifier());
-                // System.out.println(stone);
                 return board.set(stone);
             }
         } catch (Exception e) {
@@ -84,6 +83,7 @@ public class TicTacToe implements Game {
             }
         }
         // Todo: Fix this null thing.
+        System.out.println("getPlayerByIdentifier() will return null");
         return null;
     }
 

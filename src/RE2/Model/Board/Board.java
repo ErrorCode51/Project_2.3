@@ -1,5 +1,6 @@
 package RE2.Model.Board;
 
+import RE2.Model.Rules.OthelloRules;
 import RE2.Model.Rules.Rules;
 import RE2.Model.Stone.Empty;
 import RE2.Model.Stone.Stone;
@@ -9,7 +10,7 @@ public abstract class Board {
     // Since the board is always square a single value suffices
     public static byte size;
     // A board consists of a two dimensional array containing stones
-    private final Stone[][] tiles;
+    protected final Stone[][] tiles;
     private Rules rules;
 
     public Board(byte size) {
@@ -81,6 +82,23 @@ public abstract class Board {
             }
             System.out.print(line + "\n");
         }
+    }
+
+    @Override
+    public String toString() {
+        String string = "";
+        for (byte row = 0; row < size; row++) {
+            String line = "";
+            for (byte column = 0; column < size; column++) {
+                if (isEmpty(row, column)) {
+                    line += "[ ]";
+                } else {
+                    line += "[" + get(row, column).getIdentifier() + "]";
+                }
+            }
+            string += line + "\n";
+        }
+        return string;
     }
 
 }

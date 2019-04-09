@@ -3,6 +3,8 @@ package RE2.Model.Player;
 import RE2.Model.Board.Board;
 import RE2.Model.Container.TemporaryPlacement;
 import RE2.Model.Rules.Rules;
+import RE2.Model.Stone.OthelloStone;
+import RE2.Model.Stone.Stone;
 import RE2.Model.Stone.TicTacToeStone;
 
 import java.util.ArrayList;
@@ -76,7 +78,7 @@ public class ArtificialPlayer implements Player {
     private void createTemporaryPlacement(Board board, Rules rules, char identifier, byte counter,
                                           ArrayList<TemporaryPlacement> placements, byte row, byte column) {
         TemporaryPlacement placement = new TemporaryPlacement(row, column);
-        board.set(new TicTacToeStone(row, column, identifier));
+        board.set(createStone(row, column, identifier));
         if (identifier == getIdentifier()) {
             placement.score = findBestPlacement(board, rules, getOpposingIdentifier(), counter).score - counter;
         } else {
@@ -105,6 +107,14 @@ public class ArtificialPlayer implements Player {
                 break;
         }
         return opponent;
+    }
+
+    private Stone createStone(byte row, byte column, char identifier) {
+        if (this.identifier == 'X' || this.identifier == 'O') {
+            return new TicTacToeStone(row, column, identifier);
+        } else {
+            return new OthelloStone(row, column, identifier);
+        }
     }
 
 }

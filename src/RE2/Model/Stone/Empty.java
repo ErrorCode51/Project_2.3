@@ -16,4 +16,9 @@ public class Empty extends Stone {
 
     }
 
+    @Override
+    public boolean equals(char identifier) {
+        return false;
+    }
+
 }
