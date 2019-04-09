@@ -1,5 +1,6 @@
 package RE2;
 
+import RE2.View.Homescreen;
 import RE2.View.OthelloView;
 import RE2.View.TicTacToeView;
 
@@ -9,7 +10,7 @@ class Main {
 
     public static void main(String[] args) {
         // TicTacToe
-        launch(TicTacToeView.class, args);
+        launch(Homescreen.class, args);
 
         // Othello
         //launch(OthelloView.class, args);
