@@ -2,13 +2,13 @@ package RE2.View;
 
 public class userInputHelper implements Runnable {
 
-    TicTacToeView view;
+    View view;
 
     byte row;
     byte column;
     char identifier;
 
-    public userInputHelper(TicTacToeView view, byte row, byte column, char identifier) {
+    public userInputHelper(View view, byte row, byte column, char identifier) {
 
         this.view = view;
 
