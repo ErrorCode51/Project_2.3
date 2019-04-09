@@ -1,6 +1,7 @@
 package RE2.View;
 
 import RE2.Model.Game.TicTacToe;
+import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
@@ -16,8 +17,9 @@ public class TicTacToeView extends View {
         return CELL;
     }
 
-    @Override
-    public void start(Stage primaryStage) {
+
+    public TicTacToeView() {
+        Stage primaryStage = new Stage();
         GridPane pane = new GridPane();
         for (byte row = 0; row < 3; row++) {
             for (byte column = 0; column < 3; column++) {
@@ -32,7 +34,7 @@ public class TicTacToeView extends View {
         primaryStage.setTitle("Noughts and Crosses");
         primaryStage.setScene(scene);
         primaryStage.show();
-        primaryStage.setOnCloseRequest(e -> System.exit(0));
+        //primaryStage.setOnCloseRequest(e -> );
 
         game = new TicTacToe(this);
         Thread thread = new Thread(game);

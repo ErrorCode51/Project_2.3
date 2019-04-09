@@ -15,7 +15,7 @@ public class Homescreen extends Application{
     public void start(Stage primaryStage) throws Exception {
         primaryStage.setTitle("Home");
 
-        VBox vBox = new VBox(0);
+        VBox vBox = new VBox(5);
         Scene scene = new Scene(vBox, 500,500);
 
         Label name = new Label("Name: ");
@@ -25,11 +25,14 @@ public class Homescreen extends Application{
         Button openTTT = new Button("Open Tictactoe");
         openTTT.setOnAction(event -> new TicTacToeView());
 
+        Button othello = new Button("Open othello");
+        othello.setOnAction(event -> new OthelloView());
+
         Button ai = new Button("AI");
 
         Button human = new Button("Human");
 
-        vBox.getChildren().addAll(name, nameInput, openTTT, ai, human);
+        vBox.getChildren().addAll(name, nameInput, openTTT, othello, ai, human);
 
         primaryStage.setScene(scene);
         primaryStage.show();

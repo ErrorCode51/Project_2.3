@@ -11,8 +11,9 @@ import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Ellipse;
 import javafx.scene.shape.Line;
+import javafx.stage.Stage;
 
-public abstract class View extends Application {
+public abstract class View extends Stage {
 
     protected final Label statusLabel = new Label();
     protected Game game;
