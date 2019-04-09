@@ -6,6 +6,8 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.Map;
+
+import Controller.NetworkInputObserver.NetworkInputSubject;
 import com.google.common.base.*;
 
 //todo: remove once random string generator is remove from yourturn case
@@ -21,6 +23,7 @@ public class ServerController implements Runnable{
     private Socket socket;
     private boolean running = true;
     private String[] splittedMessage;
+    Map<String, String> splitMap;
     private ClientCommands clientcom = new ClientCommands();
 
 //Open a socket connection to the server if possible
@@ -87,7 +90,7 @@ public class ServerController implements Runnable{
 //        Trims the following: { } " and spaces
         tempString = tempString.replaceAll("[{}\" ]", "");
 
-        Map<String, String> splitMap = Splitter.on(",").withKeyValueSeparator(":").split(tempString);
+        splitMap = Splitter.on(",").withKeyValueSeparator(":").split(tempString);
 
 //            TEST TODO: REMOVE WHEN DONE
         for ( String key : splitMap.keySet()) {
@@ -140,6 +143,10 @@ public class ServerController implements Runnable{
                 break;
             case "DRAW":
                 System.out.println("It's a draw!");
+                break;
+            case "MOVE":
+                System.out.println("Move is called with the value: " + splitMap.get("MOVE"));
+                NetworkInputSubject.notify(Byte.parseByte(splitMap.get("MOVE")));
                 break;
         }
     }

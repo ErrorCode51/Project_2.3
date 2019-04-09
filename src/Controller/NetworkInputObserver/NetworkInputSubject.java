@@ -14,9 +14,9 @@ public class NetworkInputSubject {
         observers.remove(observer);
     }
 
-    public static void notify(byte row, byte column) {
+    public static void notify(byte tile) {
         for (NetworkInputObserver observer : observers) {
-            observer.notify(row, column);
+            observer.notify(tile);
         }
     }
 

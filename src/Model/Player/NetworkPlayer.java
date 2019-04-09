@@ -8,6 +8,7 @@ import Model.Rules.Rules;
 public class NetworkPlayer implements Player, NetworkInputObserver {
     private byte row = -1;
     private byte column = -1;
+    private byte boardSize;
     private final char identifier;
 
 
@@ -24,6 +25,7 @@ public class NetworkPlayer implements Player, NetworkInputObserver {
     public byte[] placeStone(Board board, Rules rules) {
         this.row = -1;
         this.column = -1;
+        this.boardSize = board.getSize();
 
         NetworkInputSubject.subscribe(this);
 
@@ -36,9 +38,11 @@ public class NetworkPlayer implements Player, NetworkInputObserver {
     }
 
 
-    public void notify(byte row, byte column) {
-        this.row = row;
-        this.column = column;
+    public void notify(byte tile) {
+        if (tile >= this.boardSize) {
+            this.row = (byte)(tile / this.boardSize);
+        }
+        this.column = (byte)(tile % this.boardSize);
     }
 
 
