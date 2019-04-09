@@ -31,7 +31,7 @@ public class LocalPlayer implements Player, userInputObserver {
 
         userInputSubject.subscribe(this);
 
-        while (this.row == -1 && this.column == -1) {
+        while (this.row == -1 || this.column == -1) {
             Thread.yield();
         }
 
