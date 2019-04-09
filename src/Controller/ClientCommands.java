@@ -1,4 +1,4 @@
-package controller;
+package Controller;
 
 // TODO: 02/04/2019 fix all methods so they work with the events happening in the game
 
