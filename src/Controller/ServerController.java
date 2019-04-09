@@ -46,9 +46,8 @@ public class ServerController implements Runnable{
 
 //        TODO: Make the client do login and sub instead of hardcode, hardcode only for testing
     public void run()  {
-        System.out.println("ServerController run() called");
         connectToServer();
-        clientcom.loginToServer("kevin",out);
+        clientcom.loginToServer("appel",out);
         clientcom.subTogame("Tic-tac-toe",out);
         while(running){
             handleMessage();
@@ -66,7 +65,6 @@ public class ServerController implements Runnable{
             }
 
             splittedMessage = servmessage.split("\\s+");
-            System.out.println(Arrays.toString(splittedMessage));
 
             switch (splittedMessage[0]){
                 case "OK":
@@ -96,14 +94,6 @@ public class ServerController implements Runnable{
 
         splitMap = Splitter.on(",").withKeyValueSeparator(":").split(tempString);
 
-//            TEST TODO: REMOVE WHEN DONE
-        for ( String key : splitMap.keySet()) {
-            System.out.println(key + " = " + splitMap.get(key));
-           // System.out.println(splitMap.keySet());
-        }
-        System.out.println(splitMap.get("MOVE"));
-
-//            TEST END
     }
 
 
@@ -111,17 +101,14 @@ public class ServerController implements Runnable{
     private void handleSrv(String typeOfMessage){
             switch (typeOfMessage){
                 case "HELP":
-                        System.out.println("Help was called");
+
                     break;
                 case "GAME":
-                    System.out.println("game was called");
                     gamehandler(splittedMessage[2]);
                     break;
                 case "GAMELIST":
-                    System.out.println("gamelist was called");
                     break;
                 case "PLAYERLIST":
-                    System.out.println("playerlist was called");
                     break;
             }
     }
@@ -130,15 +117,9 @@ public class ServerController implements Runnable{
         switch(gameOption){
             case "MATCH":
                 this.playerToMove = splitMap.get("PLAYERTOMOVE");
-                System.out.println("match was called");
                 break;
             case "YOURTURN":
-//                System.out.println("yourturn was called");
-//                // TODO: 03/04/2019  Add code for doing the move ( and remove the random one, pls)
-//                Random rand = new Random();
-//                int n = rand.nextInt(8);
-//                String str = Integer.toString(n);
-//                clientcom.move(str,out);
+
                 break;
             case "WIN":
                 System.out.println("You've won!");
@@ -150,7 +131,6 @@ public class ServerController implements Runnable{
                 System.out.println("It's a draw!");
                 break;
             case "MOVE":
-                System.out.println("Move is called with the value: " + splitMap.get("MOVE"));
                 NetworkInputSubject.notify(Byte.parseByte(splitMap.get("MOVE")));
                 break;
         }

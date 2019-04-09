@@ -23,7 +23,6 @@ public class NetworkPlayer implements Player, NetworkInputObserver {
 
 
     public byte[] placeStone(Board board, Rules rules) {
-        System.out.println("NetworkPlayer.placeStone() was called");
         this.row = -1;
         this.column = -1;
         this.boardSize = board.getSize();
@@ -34,14 +33,12 @@ public class NetworkPlayer implements Player, NetworkInputObserver {
             Thread.yield();
         }
 
-        System.out.println("NetworkPlayer's move: " + row + ", " + column);
         NetworkInputSubject.unsubscribe(this);
         return new byte[]{this.row, this.column};
     }
 
 
     public void notify(byte tile) {
-        System.err.println(this + " was notified");
         this.row = (byte) (tile / this.boardSize);
         this.column = (byte)(tile % this.boardSize);
     }
