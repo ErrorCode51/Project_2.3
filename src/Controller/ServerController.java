@@ -28,6 +28,8 @@ public class ServerController implements Runnable{
     private ClientCommands clientcom = new ClientCommands();
     private String playerToMove;
 
+    private static ServerController persistentServerController;
+
 //Open a socket connection to the server if possible
     private void connectToServer(){
         System.out.println("ServerController constructor called");
@@ -59,6 +61,8 @@ public class ServerController implements Runnable{
     private void handleMessage(){
         try {
             String servmessage = br.readLine();
+
+            System.out.println(servmessage);
 
             if (servmessage.contains("{")) {
                 genMap(servmessage);
@@ -96,9 +100,6 @@ public class ServerController implements Runnable{
         tempString = tempString.replace(": ", ":");
 
         splitMap = Splitter.on(",").withKeyValueSeparator(":").split(tempString);
-
-        System.out.println(Arrays.toString(splitMap.keySet().toArray()));
-        System.out.println(Arrays.toString(splitMap.entrySet().toArray()));
     }
 
 
@@ -136,7 +137,10 @@ public class ServerController implements Runnable{
                 System.out.println("It's a draw!");
                 break;
             case "MOVE":
-                NetworkInputSubject.notify(Byte.parseByte(splitMap.get("MOVE")));
+                try {
+                    NetworkInputSubject.notify(Byte.parseByte(splitMap.get("MOVE")));
+                } catch (NumberFormatException nfe) {
+                }
                 break;
         }
     }
@@ -149,5 +153,24 @@ public class ServerController implements Runnable{
 
     public String getPlayerToMove() {
         return this.playerToMove;
+    }
+
+    public void resetGameData() {
+        playerToMove = null;
+    }
+
+
+    public static void createPersistentServerController() {
+        persistentServerController = new ServerController();
+        Thread t = new Thread(persistentServerController);
+        t.start();
+    }
+
+
+    public static ServerController getPersistentServerController() {
+        if (persistentServerController == null) {
+            createPersistentServerController();
+        }
+        return persistentServerController;
     }
 }

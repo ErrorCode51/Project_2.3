@@ -37,18 +37,18 @@ public class TicTacToe implements Game {
             players[0] = new LocalPlayer('X');
             players[1] = new ArtificialPlayer('O');
         } else {
-            this.controllertje = new ServerController();
-            Thread t = new Thread(controllertje);
-            t.start();
+            this.controllertje = ServerController.getPersistentServerController();
 
             while (controllertje.getPlayerToMove() == null) {
                 Thread.yield();
             }
 
             if (controllertje.getPlayerToMove().equals(NetworkConfigurator.getProperty("PLAYER_NAME"))) {
+                System.err.println("You get to start");
                 players[0] = new ArtificialPlayer('X');
                 players[1] = new NetworkPlayer('O');
             } else {
+                System.err.println("The other player gets to start");
                 players[0] = new NetworkPlayer('X');
                 players[1] = new ArtificialPlayer('O');
             }
@@ -82,6 +82,7 @@ public class TicTacToe implements Game {
             case 'O':
                 System.err.println(players[1] + " has won!!!");
         }
+        controllertje.resetGameData();
     }
 
     public boolean handlePlacement(Player player) {
