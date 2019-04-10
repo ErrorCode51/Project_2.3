@@ -16,9 +16,14 @@ public class OthelloStone extends Stone {
         if (identifier == 'B' || identifier == 'W') {
             this.identifier = identifier;
         } else {
-            throw new InvalidIdentifierException("Invalid identifier provided. Only 'X' or 'O' are allowed");
+            throw new InvalidIdentifierException("Invalid identifier provided. Only 'B' or 'W' are allowed");
         }
 
+    }
+
+    @Override
+    public String toString() {
+        return "[" + x + ", " + y + "] = " + identifier;
     }
 
     public byte getX() {
@@ -37,8 +42,17 @@ public class OthelloStone extends Stone {
         return this;
     }
 
-    public boolean equals(char colour) {
-        return (this.identifier == colour);
+
+    public boolean equals(char identifier) {
+        return (this.identifier == identifier);
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        return (object instanceof OthelloStone &&
+                this.x == ((OthelloStone) object).getX() &&
+                this.x == ((OthelloStone) object).getY() &&
+                this.identifier == ((OthelloStone) object).getIdentifier());
     }
 
     public void turnOver() {

@@ -1,7 +1,6 @@
 package View;
 
 import Model.Game.TicTacToe;
-import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
@@ -19,7 +18,7 @@ public class TicTacToeView extends View {
 
 
     public TicTacToeView() {
-        Stage primaryStage = new Stage();
+        Stage stage = new Stage();
         GridPane pane = new GridPane();
         for (byte row = 0; row < 3; row++) {
             for (byte column = 0; column < 3; column++) {
@@ -31,14 +30,17 @@ public class TicTacToeView extends View {
         borderPane.setBottom(statusLabel);
 
         Scene scene = new Scene(borderPane, 350, 350);
-        primaryStage.setTitle("Noughts and Crosses");
-        primaryStage.setScene(scene);
-        primaryStage.show();
-        //primaryStage.setOnCloseRequest(e -> );
+        stage.setTitle("Noughts and Crosses");
+        stage.setScene(scene);
+        stage.show();
+        //stage.setOnCloseRequest(e -> System.exit(0));
 
-        game = new TicTacToe(this, true);
+        game = new TicTacToe(this, false);
         Thread thread = new Thread(game);
         thread.start();
     }
 
 }
+
+
+
