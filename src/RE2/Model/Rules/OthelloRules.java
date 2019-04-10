@@ -98,7 +98,8 @@ public class OthelloRules implements Rules {
             return false;
         }
         // Temporary fix
-        if (row == 0 && column == 0 && board.get(x, y).getClass() != Empty.class) {
+        // if (row == 0 && column == 0 && board.get(x, y).getClass() != Empty.class) {
+        if (row == 0 && column == 0) {
             // System.out.println("Current position\n");
             return false;
         }

@@ -5,7 +5,7 @@ import RE2.Model.Rules.Rules;
 import RE2.Model.Stone.Empty;
 import RE2.Model.Stone.Stone;
 
-public class OthelloBoard extends Board {
+public class OthelloBoard extends Board implements Cloneable {
 
     // A board consists of a two dimensional array containing stones
     private OthelloRules rules;
@@ -32,5 +32,14 @@ public class OthelloBoard extends Board {
 //            }
 //        }
 //    }
+
+    public Object generateBackup() {
+        try {
+            return this.clone();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
 }

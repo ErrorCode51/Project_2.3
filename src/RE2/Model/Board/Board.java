@@ -46,6 +46,7 @@ public abstract class Board {
 
     // Removes a stone from the board. Only called by AI
     public void remove(byte row, byte column) {
+        System.out.println("Removed stone at " + row + ", " + column);
         tiles[row][column] = new Empty();
     }
 

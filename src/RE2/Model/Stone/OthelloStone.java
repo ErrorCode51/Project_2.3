@@ -47,6 +47,14 @@ public class OthelloStone extends Stone {
         return (this.identifier == identifier);
     }
 
+    @Override
+    public boolean equals(Object object) {
+        return (object instanceof OthelloStone &&
+                this.x == ((OthelloStone) object).getX() &&
+                this.x == ((OthelloStone) object).getY() &&
+                this.identifier == ((OthelloStone) object).getIdentifier());
+    }
+
     public void turnOver() {
         if (this.identifier == 'B') {
             this.identifier = 'W';

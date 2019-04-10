@@ -2,12 +2,16 @@ package RE2.Model.Game;
 
 import RE2.Model.Board.OthelloBoard;
 
+import RE2.Model.Player.ArtificialPlayer;
 import RE2.Model.Player.LocalPlayer;
 import RE2.Model.Player.Player;
 import RE2.Model.Rules.OthelloRules;
 import RE2.Model.Stone.OthelloStone;
 import RE2.Model.Stone.Stone;
 import RE2.View.OthelloView;
+
+import java.util.ArrayList;
+import java.util.Random;
 
 public class Othello implements Game {
 
@@ -69,14 +73,17 @@ public class Othello implements Game {
             case 'D':
                 System.out.println(rules.getScore(board, 'B') + " vs. " + rules.getScore(board, 'W'));
                 System.err.println("It's a draw");
+                board.printBoard();
                 break;
             case 'B':
                 System.out.println(rules.getScore(board, 'B') + " vs. " + rules.getScore(board, 'W'));
                 System.err.println(getPlayerByIdentifier('B') + " has won!!!");
+                board.printBoard();
                 break;
             case 'W':
                 System.out.println(rules.getScore(board, 'W') + " vs. " + rules.getScore(board, 'B'));
                 System.err.println(getPlayerByIdentifier('W') + " has won!!!");
+                board.printBoard();
         }
     }
 
@@ -87,9 +94,19 @@ public class Othello implements Game {
                 Stone stone = new OthelloStone(placement[0], placement[1], player.getIdentifier());
                 // Todo: stop calling this method twice you idiot!
                 if (!rules.testForLegal(board, stone, false)) {
+                    /////////////////////
+                    // SUPER DIRTY FIX //
+                    /////////////////////
+                    if (getPlayerByIdentifier(currentPlayer).getClass() == ArtificialPlayer.class) {
+                        ArrayList<Stone> test = ((OthelloRules) rules).findAllLegal(board, currentPlayer);
+                        Random random = new Random();
+                        rules.testForLegal(board, test.get(random.nextInt(test.size())), true);
+                        return board.set(test.get(random.nextInt(test.size())));
+                    }
                     return false;
                 }
                 rules.testForLegal(board, stone, true);
+                System.out.println(stone);
                 return board.set(stone);
             }
         } catch (Exception e) {
