@@ -17,7 +17,7 @@ public class OthelloView extends View {
 
 
     public OthelloView() {
-        Stage primaryStage = new Stage();
+        Stage stage = new Stage();
         GridPane pane = new GridPane();
         for (byte row = 0; row < 8; row++) {
             for (byte column = 0; column < 8; column++) {
@@ -29,12 +29,12 @@ public class OthelloView extends View {
         borderPane.setBottom(statusLabel);
 
         Scene scene = new Scene(borderPane, 700, 700);
-        primaryStage.setTitle("And what’s he then that says I play the villain?");
-        primaryStage.setScene(scene);
-        primaryStage.show();
-        //primaryStage.setOnCloseRequest(e -> System.exit(0));
+        stage.setTitle("And what’s he then that says I play the villain?");
+        stage.setScene(scene);
+        stage.show();
+        //stage.setOnCloseRequest(e -> System.exit(0));
 
-        game = new Othello(this);
+        Othello game = new Othello(this, false);
         Thread thread = new Thread(game);
         thread.start();
     }
@@ -42,3 +42,6 @@ public class OthelloView extends View {
 
 
 }
+
+
+

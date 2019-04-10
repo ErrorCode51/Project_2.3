@@ -4,14 +4,15 @@ import Controller.userInputObserver.userInputObserver;
 import Controller.userInputObserver.userInputSubject;
 import Model.Board.Board;
 import Model.Rules.Rules;
+import Model.Stone.OthelloStone;
+import Model.Stone.Stone;
 import Model.Stone.TicTacToeStone;
 
 public class LocalPlayer implements Player, userInputObserver {
 
+    public char identifier;
     private byte row = -1;
     private byte column = -1;
-
-    public char identifier;
 
     public LocalPlayer(char identifier) {
 
@@ -49,8 +50,15 @@ public class LocalPlayer implements Player, userInputObserver {
         if (!board.isEmpty(row, column)) {
             return false;
         } else {
-            TicTacToeStone stone = new TicTacToeStone(row, column, identifier);
-            board.set(stone);
+            if (identifier == 'X' || identifier == 'O') {
+                Stone stone = new TicTacToeStone(row, column, identifier);
+                board.set(stone);
+            }
+            if (identifier == 'B' || identifier == 'W') {
+                Stone stone = new OthelloStone(row, column, identifier);
+                board.set(stone);
+            }
+            System.out.println("True");
             return true;
         }
     }

@@ -8,14 +8,14 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-public class Homescreen extends Application{
+public class Homescreen extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
         primaryStage.setTitle("Home");
 
-        VBox vBox = new VBox(5);
-        Scene scene = new Scene(vBox, 500,500);
+        VBox vBox = new VBox(0);
+        Scene scene = new Scene(vBox, 500, 500);
 
         Label name = new Label("Name: ");
 
@@ -32,6 +32,8 @@ public class Homescreen extends Application{
         Button human = new Button("Human");
 
         vBox.getChildren().addAll(name, nameInput, openTTT, othello, ai, human);
+
+        othello.setOnAction(event -> new OthelloView());
 
         primaryStage.setScene(scene);
         primaryStage.show();

@@ -30,4 +30,6 @@ public abstract class Stone {
 
     public abstract void turnOver();
 
+    public abstract boolean equals(char identifier);
+
 }

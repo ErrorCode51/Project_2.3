@@ -30,4 +30,9 @@ public class TicTacToeStone extends Stone {
     public void turnOver() {
 
     }
+
+    @Override
+    public boolean equals(char identifier) {
+        return (this.identifier == identifier);
+    }
 }
