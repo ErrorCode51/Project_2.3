@@ -45,7 +45,7 @@ public class TicTacToe implements Game {
                 Thread.yield();
             }
 
-            if (controllertje.getPlayerToMove().equals(NetworkConfigurator.getPropertie("PLAYER_NAME"))) {
+            if (controllertje.getPlayerToMove().equals(NetworkConfigurator.getProperty("PLAYER_NAME"))) {
                 players[0] = new ArtificialPlayer('X');
                 players[1] = new NetworkPlayer('O');
             } else {
