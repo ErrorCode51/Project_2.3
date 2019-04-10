@@ -2,24 +2,32 @@ package Model.Game;
 
 import Model.Board.Board;
 import Model.Board.OthelloBoard;
+import Model.Board.TicTacToeBoard;
+import Model.Player.ArtificialPlayer;
+import Model.Player.LocalPlayer;
 import Model.Player.Player;
 import Model.Rules.OthelloRules;
 import Model.Rules.Rules;
+import Model.Rules.TicTacToeRules;
 import Model.Stone.OthelloStone;
+import View.OthelloView;
+import View.TicTacToeView;
 
 public class Othello implements Game {
 
-    private final Board board;
+    public final Player[] players;
+    private final OthelloBoard board;
     private final Rules rules;
-
+    private final OthelloView view;
     private char currentPlayer;
 
-    public final Player[] players = new Player[2];
+    public Othello(OthelloView view) {
 
-    public Othello() {
-
-        this.board = new OthelloBoard();
+        board = new OthelloBoard();
+        players = new Player[2];
+        this.view = view;
         this.rules = new OthelloRules();
+
         board.initialize(rules);
         // Set starting positions
         board.set(new OthelloStone((byte) 3, (byte) 3, 'W'));
@@ -29,11 +37,13 @@ public class Othello implements Game {
         // Footnote:
         // It appears the appropriate conversion is performed during compile-time and not during
         // runtime, in short this means performance is not impacted.
+        players[0] = new LocalPlayer('X');
+        players[1] = new ArtificialPlayer('O');
 
     }
 
     @Override
     public void run() {
-
+        // Code....
     }
 }

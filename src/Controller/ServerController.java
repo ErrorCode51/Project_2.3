@@ -17,7 +17,7 @@ import java.util.Random;
 // TODO: 03/04/2019 clean this mess up and make handlers for the switch cases
 
 public class ServerController implements Runnable{
-    private final String host = "145.37.149.79";
+    private final String host = "localhost";
     private final int portNumber = 7789;
     private PrintWriter out;
     private BufferedReader br;
