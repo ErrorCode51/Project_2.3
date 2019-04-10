@@ -1,5 +1,6 @@
 package Model.Game;
 
+import Controller.NetworkConfigurator;
 import Controller.ServerController;
 import Model.Board.Board;
 import Model.Board.TicTacToeBoard;
@@ -44,7 +45,7 @@ public class TicTacToe implements Game {
                 Thread.yield();
             }
 
-            if (controllertje.getPlayerToMove().equals("appel")) {
+            if (controllertje.getPlayerToMove().equals(NetworkConfigurator.getPropertie("PLAYER_NAME"))) {
                 players[0] = new ArtificialPlayer('X');
                 players[1] = new NetworkPlayer('O');
             } else {
