@@ -17,8 +17,8 @@ import java.util.Random;
 // TODO: 03/04/2019 clean this mess up and make handlers for the switch cases
 
 public class ServerController implements Runnable{
-    private final String host = "localhost";
-    private final int portNumber = 7789;
+    private final String host = NetworkConfigurator.getPropertie("SERVER_IP");
+    private final int portNumber = Integer.parseInt(NetworkConfigurator.getPropertie("SERVER_PORT"));
     private PrintWriter out;
     private BufferedReader br;
     private Socket socket;
@@ -47,7 +47,7 @@ public class ServerController implements Runnable{
 //        TODO: Make the client do login and sub instead of hardcode, hardcode only for testing
     public void run()  {
         connectToServer();
-        clientcom.loginToServer("appel",out);
+        clientcom.loginToServer(NetworkConfigurator.getPropertie("PLAYER_NAME"), out);
         clientcom.subTogame("Tic-tac-toe",out);
         while(running){
             handleMessage();
