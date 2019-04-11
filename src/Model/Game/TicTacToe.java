@@ -36,7 +36,6 @@ public class TicTacToe implements Game, NetworkTurnObserver, NetworkForfeitObser
 
     public TicTacToe(TicTacToeView view, boolean usingNetwork) {
 
-
         // Refactor: Constructor Done!
         board = new TicTacToeBoard();
         players = new Player[2];

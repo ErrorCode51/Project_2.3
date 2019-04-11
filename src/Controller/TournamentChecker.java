@@ -9,10 +9,10 @@ public class TournamentChecker {
     public void CheckTournament(String gametype){
         switch (gametype){
         case "Tic-tac-toe":
-            Platform.runLater(() -> drawTicTacToe());
+            Platform.runLater(() -> new TicTacToeView());
         break;
         case "Reversi":
-            Platform.runLater(() -> drawReversi());
+            Platform.runLater(() -> new OthelloView());
         }
     }
 
