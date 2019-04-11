@@ -61,7 +61,7 @@ public abstract class View extends Stage {
             drawPlayer();
         }
 
-        void drawPlayer() {
+        public void drawPlayer() {
             if (this.player == 'X') {
                 this.getChildren().addAll(drawCross()[0], drawCross()[1]);
             } else if (this.player == 'O') {

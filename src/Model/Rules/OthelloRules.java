@@ -11,9 +11,6 @@ public class OthelloRules implements Rules {
 
     private static final char DRAW = 'D';
     private static final char ONGOING = 'N';
-    // These might be deprecated
-    ArrayList<Stone> legalBlack = new ArrayList();
-    ArrayList<Stone> legalWhite = new ArrayList();
 
     @Override
     public char gameOver(Board board) {
@@ -33,7 +30,6 @@ public class OthelloRules implements Rules {
                         break;
                     }
                 }
-                // System.out.println(row + ", " + column + ": " + gameOver);
             }
         }
         if (!gameOver) {
@@ -63,7 +59,7 @@ public class OthelloRules implements Rules {
             for (byte column = 0; column < board.getSize(); column++) {
                 if (!board.isEmpty(row, column)) {
                     if (board.get(row, column).getIdentifier() == identifier) {
-                        score++;
+                        score += 1;
                     }
                 }
             }
@@ -138,7 +134,6 @@ public class OthelloRules implements Rules {
             }
             if (testForLegal(board, stone, row, column, counter + 1, turnOver)) {
                 if (turnOver) {
-                    // System.out.print("Stone at: " + stoned.getX() + ", " + stoned.getY() + " turned over!\n");
                     stoned.turnOver();
                 }
                 return true;
@@ -161,15 +156,6 @@ public class OthelloRules implements Rules {
             }
         }
         return legalPlacements;
-    }
-
-    // Method might be deprecated
-    public void printLegal(ArrayList<Stone> list) {
-        String legal = "";
-        for (Stone stone : list) {
-            legal += "[" + stone.getX() + ", " + stone.getY() + "] ";
-        }
-        System.out.println(legal);
     }
 
 }

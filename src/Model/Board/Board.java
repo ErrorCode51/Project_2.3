@@ -11,7 +11,7 @@ public abstract class Board {
     public static byte size;
     // A board consists of a two dimensional array containing stones
     protected final Stone[][] tiles;
-    private Rules rules;
+    protected Rules rules;
 
     public Board(byte size) {
 
@@ -67,21 +67,6 @@ public abstract class Board {
     // Called the gameOver() method from the rules bound to the board
     public char gameOver(Board board) {
         return rules.gameOver(board);
-    }
-
-    // Prints the board to commandline for debugging purposes
-    public void printBoard() {
-        for (byte row = 0; row < size; row++) {
-            String line = "";
-            for (byte column = 0; column < size; column++) {
-                if (isEmpty(row, column)) {
-                    line += "[ ]";
-                } else {
-                    line += "[" + get(row, column).getIdentifier() + "]";
-                }
-            }
-            System.out.print(line + "\n");
-        }
     }
 
     @Override

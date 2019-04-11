@@ -10,12 +10,6 @@ public class OthelloView extends View {
 
     private final Cell[][] CELL = new Cell[8][8];
 
-    @Override
-    public Cell[][] getCell() {
-        return CELL;
-    }
-
-
     public OthelloView() {
         Stage stage = new Stage();
         GridPane pane = new GridPane();
@@ -24,6 +18,10 @@ public class OthelloView extends View {
                 pane.add(CELL[row][column] = new Cell(row, column), column, row);
             }
         }
+        CELL[3][3].setPlayer('W');
+        CELL[3][4].setPlayer('B');
+        CELL[4][3].setPlayer('B');
+        CELL[4][4].setPlayer('W');
         BorderPane borderPane = new BorderPane();
         borderPane.setCenter(pane);
         borderPane.setBottom(statusLabel);
@@ -39,6 +37,10 @@ public class OthelloView extends View {
         thread.start();
     }
 
+    @Override
+    public Cell[][] getCell() {
+        return CELL;
+    }
 
 
 }

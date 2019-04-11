@@ -21,6 +21,14 @@ public class OthelloStone extends Stone {
 
     }
 
+    public OthelloStone(OthelloStone stone) {
+
+        super.x = stone.getX();
+        super.y = stone.getY();
+        this.identifier = stone.getIdentifier();
+
+    }
+
     @Override
     public String toString() {
         return "[" + x + ", " + y + "] = " + identifier;
