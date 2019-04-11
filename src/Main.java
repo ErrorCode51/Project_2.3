@@ -13,12 +13,17 @@ class Main {
     public static void main(String[] args) {
         NetworkConfigurator.loadPropFile();
 
-         launch(Homescreen.class, args);
+        launch(Homescreen.class, args);
 
 //        OthelloBoard board = new OthelloBoard();
 //        OthelloRules rules = new OthelloRules();
 
 //        board.initialize(rules);
+
+//        board.set(new OthelloStone((byte) 3, (byte) 3, 'W'));
+//        board.set(new OthelloStone((byte) 3, (byte) 4, 'B'));
+//        board.set(new OthelloStone((byte) 4, (byte) 3, 'B'));
+//        board.set(new OthelloStone((byte) 4, (byte) 4, 'W'));
 
 //        board.set(new OthelloStone((byte) 0, (byte) 7, 'B'));
 //        board.set(new OthelloStone((byte) 0, (byte) 6, 'B'));

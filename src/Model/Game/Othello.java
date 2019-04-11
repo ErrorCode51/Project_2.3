@@ -73,17 +73,17 @@ public class Othello implements Game {
             case 'D':
                 System.out.println(rules.getScore(board, 'B') + " vs. " + rules.getScore(board, 'W'));
                 System.err.println("It's a draw");
-                board.printBoard();
+                System.out.println(board);
                 break;
             case 'B':
                 System.out.println(rules.getScore(board, 'B') + " vs. " + rules.getScore(board, 'W'));
                 System.err.println(getPlayerByIdentifier('B') + " has won!!!");
-                board.printBoard();
+                System.out.println(board);
                 break;
             case 'W':
                 System.out.println(rules.getScore(board, 'W') + " vs. " + rules.getScore(board, 'B'));
                 System.err.println(getPlayerByIdentifier('W') + " has won!!!");
-                board.printBoard();
+                System.out.println(board);
         }
     }
 

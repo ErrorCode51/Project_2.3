@@ -7,7 +7,6 @@ import Model.Rules.OthelloRules;
 import Model.Rules.Rules;
 import Model.Stone.OthelloStone;
 import Model.Stone.Stone;
-import Model.Stone.TicTacToeStone;
 
 import java.util.ArrayList;
 
@@ -16,7 +15,7 @@ public class ArtificialOthello implements Player {
     public char identifier;
 
     private int depthCounter = 0;
-    private int maximumDepth = 100000;
+    private int maximumDepth = 300000;
     private char current;
 
     private Node root = null;
@@ -39,14 +38,11 @@ public class ArtificialOthello implements Player {
 
     @Override
     public byte[] placeStone(Board board, Rules rules) {
-        // System.out.println("Hello world!");
         // Generate a list containing all legal placements
         current = identifier;
         ArrayList<Stone> legalPlacements = ((OthelloRules) rules).findAllLegal(board, current);
-        //System.out.println(legalPlacements);
-        // System.out.println(legalPlacements);
         // Start recursively placing stones on said legal placements
-        placeStone(board, rules, legalPlacements);
+        placeStone((OthelloBoard) board, rules, legalPlacements);
         // Find best placement
         findBestPlacement(this.root);
         int indexBestPlacement = 0;
@@ -55,12 +51,16 @@ public class ArtificialOthello implements Player {
             if (branches.get(index).getMaximumScore() > branches.get(indexBestPlacement).getMaximumScore()) {
                 indexBestPlacement = index;
             }
+            if (branches.get(index).getMaximumScore() == branches.get(indexBestPlacement).getMaximumScore()) {
+                if (branches.get(index).getMinimumScore() > branches.get(indexBestPlacement).getMinimumScore()) {
+                    indexBestPlacement = index;
+                }
+            }
         }
         // Some random return shit so StupidJ stops complaining
         byte[] placement = {branches.get(indexBestPlacement).getStone().getX(), branches.get(indexBestPlacement).getStone().getY()};
-        // System.out.println(placement[0] + ", " + placement[1]);
-        System.out.println(depthCounter);
         return placement;
+        // return new byte[] {0, 0};
     }
 
     private void findBestPlacement(final Node root) {
@@ -69,12 +69,10 @@ public class ArtificialOthello implements Player {
             this.findBestPlacement(branch);
             branch.minimax(true);
             branch.minimax(false);
-            // System.out.println(branch.getStone() + ": " + branch.minimax(true));
-            // System.out.println(branch.getStone() + ": " + branch.minimax(false));
         }
     }
 
-    private void placeStone(Board board, Rules rules, ArrayList<Stone> stones) {
+    private void placeStone(OthelloBoard board, Rules rules, ArrayList<Stone> stones) {
         // Reset the depth counter
         depthCounter = 0;
         // Create a new root
@@ -85,8 +83,7 @@ public class ArtificialOthello implements Player {
         }
     }
 
-    private void placeStone(Board board, Rules rules, Node root, ArrayList<Stone> stones) {
-        // System.out.println(stones);
+    private void placeStone(OthelloBoard board, Rules rules, Node root, ArrayList<Stone> stones) {
         if (this.depthCounter < maximumDepth) {
             // This is to limit the recursion should it take to long to take a turn
             this.depthCounter++;
@@ -95,24 +92,69 @@ public class ArtificialOthello implements Player {
                 Node node = new Node(stone, root);
                 root.setBranch(generateTableID(stone), node);
                 // Don't play on the actual board por favor
-                Board temporaryBoard = genereateBoard(board, rules);
-                // Because we limit recursion we score based on the amount of stones turned
-                byte stonesTurned = 0;
-//                stonesTurned += ((OthelloRules) rules).getScore(temporaryBoard, current);
+                OthelloBoard temporaryBoard = generateBoard(board, rules);
                 // Place a stone and flip the necessary stones.
+                // Todo: Refactor so this is one method as originally intended
                 ((OthelloRules) rules).testForLegal(temporaryBoard, stone, true);
                 temporaryBoard.set(stone);
-                stonesTurned = ((OthelloRules) rules).getScore(temporaryBoard, current);
-                if (stonesTurned > node.getMaximumScore()) {
-                    node.setMaximumScore(stonesTurned);
-                    if (node.getPrevious() != null) {
-                        node.getPrevious().setMaximumScore(stonesTurned);
+                // Because we limit recursion we score based on the amount of stones turned
+                if (stone.getIdentifier() == this.identifier) {
+                    byte score = temporaryBoard.getScoreByIdentifier(stone.getIdentifier());
+                    if (score > node.getMaximumScore()) {
+                        node.setMaximumScore(score);
+                        // Add score if placement wins the match
+                        if (rules.gameOver(temporaryBoard) == stone.getIdentifier()) {
+                            score += 30;
+                        }
+                        // Add extra score if placement is in a corner
+                        if (stone.getX() == 0 && stone.getY() == 0 || stone.getX() == 0 && stone.getY() == 7 ||
+                                stone.getX() == 7 && stone.getY() == 0 || stone.getX() == 7 && stone.getY() == 7) {
+                            score += 15;
+                        }
+                        // Add extra score if placement is a stone controlling a corner
+                        if (stone.getX() == 0 && stone.getY() == 2 || stone.getX() == 2 && stone.getY() == 0 ||
+                                stone.getX() == 0 && stone.getY() == 5 || stone.getX() == 5 && stone.getY() == 0 ||
+                                stone.getX() == 7 && stone.getY() == 2 || stone.getX() == 7 && stone.getY() == 5 ||
+                                stone.getX() == 2 && stone.getY() == 7 || stone.getX() == 5 && stone.getY() == 7) {
+                            score += 10;
+                        }
+                        // Add extra score if placement is a stone controlling a stone controlling a corner
+                        if (stone.getX() == 2 && stone.getY() == 2 || stone.getX() == 2 && stone.getY() == 5 ||
+                                stone.getX() == 5 && stone.getY() == 5 || stone.getX() == 5 && stone.getY() == 2) {
+                            score += 5;
+                        }
+                        if (node.getPrevious() != null) {
+                            if (score > node.getPrevious().getMaximumScore()) {
+                                node.getPrevious().setMaximumScore(score);
+                            }
+                        }
                     }
-                }
-                if (stonesTurned < node.getMinimumScore()) {
-                    node.setMinimumScore(stonesTurned);
-                    if (node.getPrevious() != null) {
-                        node.getPrevious().setMinimumScore(stonesTurned);
+                } else {
+                    byte score = (byte) (temporaryBoard.getScoreByIdentifier(stone.getIdentifier()) * -1);
+                    // Subtract extra score if placement is in a corner
+                    if (stone.getX() == 0 && stone.getY() == 0 || stone.getX() == 0 && stone.getY() == 7 ||
+                            stone.getX() == 7 && stone.getY() == 0 || stone.getX() == 7 && stone.getY() == 7) {
+                        score -= 15;
+                    }
+                    // Subtract extra score if placement is a stone controlling a corner
+                    if (stone.getX() == 0 && stone.getY() == 2 || stone.getX() == 2 && stone.getY() == 0 ||
+                            stone.getX() == 0 && stone.getY() == 5 || stone.getX() == 5 && stone.getY() == 0 ||
+                            stone.getX() == 7 && stone.getY() == 2 || stone.getX() == 7 && stone.getY() == 5 ||
+                            stone.getX() == 2 && stone.getY() == 7 || stone.getX() == 5 && stone.getY() == 7) {
+                        score -= 10;
+                    }
+                    // Subtract extra score if placement is a stone controlling a stone controlling a corner
+                    if (stone.getX() == 2 && stone.getY() == 2 || stone.getX() == 2 && stone.getY() == 5 ||
+                            stone.getX() == 5 && stone.getY() == 5 || stone.getX() == 5 && stone.getY() == 2) {
+                        score -= 5;
+                    }
+                    if (score < node.getMinimumScore()) {
+                        node.setMinimumScore(score);
+                        if (node.getPrevious() != null) {
+                            if (score < node.getPrevious().getMaximumScore()) {
+                                node.getPrevious().setMinimumScore(score);
+                            }
+                        }
                     }
                 }
                 // Now repeat the same steps for the opposing player
@@ -120,23 +162,28 @@ public class ArtificialOthello implements Player {
                 ArrayList<Stone> legalPlacements = ((OthelloRules) rules).findAllLegal(temporaryBoard, current);
                 if (legalPlacements.size() > 0) {
                     this.placeStone(temporaryBoard, rules, node, legalPlacements);
-                    // System.out.println(node.getStone() + " from: " + stones + "\n" + temporaryBoard);
+                    // I'll leave this here for future reference as this is the ideal place to put a println()
+                    // System.out.println(stones);
+                    // if (stones.get(0).getIdentifier() == this.identifier) {
+                    //     System.out.println(node.getStone() + " max. score is: " + node.getMaximumScore());
+                    // } else {
+                    //     System.out.println(node.getStone() + " min. score is: " + node.getMinimumScore());
+                    // }
                 }
             }
         }
-
     }
 
 
     // Generate a copy of the received board
-    Board genereateBoard(Board board, Rules rules) {
-        Board temporaryBoard = new OthelloBoard();
+    OthelloBoard generateBoard(OthelloBoard board, Rules rules) {
+        OthelloBoard temporaryBoard = new OthelloBoard();
         temporaryBoard.initialize(rules);
         final byte SIZE = board.getSize();
         for (byte row = 0; row < SIZE; row++) {
             for (byte column = 0; column < SIZE; column++) {
                 if (!board.isEmpty(row, column)) {
-                    temporaryBoard.set(new OthelloStone(row, column, board.get(row, column).getIdentifier()));
+                    temporaryBoard.set(new OthelloStone((OthelloStone) board.get(row, column)));
                 }
             }
         }
@@ -152,35 +199,6 @@ public class ArtificialOthello implements Player {
             this.current = 'W';
         } else {
             this.current = 'B';
-        }
-    }
-
-    // Returns the opposing identifier. Only used by AI.
-    private char getOpposingIdentifier() {
-        // Unsure if this method is needed in both TicTacToe and Othello, made if future-proof non the less
-        char opponent = ' ';
-        switch (identifier) {
-            case 'X':
-                opponent = 'O';
-                break;
-            case 'O':
-                opponent = 'X';
-                break;
-            case 'B':
-                opponent = 'W';
-                break;
-            case 'W':
-                opponent = 'B';
-                break;
-        }
-        return opponent;
-    }
-
-    private Stone createStone(byte row, byte column, char identifier) {
-        if (this.identifier == 'X' || this.identifier == 'O') {
-            return new TicTacToeStone(row, column, identifier);
-        } else {
-            return new OthelloStone(row, column, identifier);
         }
     }
 

@@ -98,4 +98,9 @@ public class Node {
         }
     }
 
+    @Override
+    public String toString() {
+        return "Placement: " + stone.getX() + ", " + stone.getY() + " score: " + minimumScore + "/" + maximumScore;
+    }
+
 }

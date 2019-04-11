@@ -69,21 +69,6 @@ public abstract class Board {
         return rules.gameOver(board);
     }
 
-    // Prints the board to commandline for debugging purposes
-    public void printBoard() {
-        for (byte row = 0; row < size; row++) {
-            String line = "";
-            for (byte column = 0; column < size; column++) {
-                if (isEmpty(row, column)) {
-                    line += "[ ]";
-                } else {
-                    line += "[" + get(row, column).getIdentifier() + "]";
-                }
-            }
-            System.out.print(line + "\n");
-        }
-    }
-
     @Override
     public String toString() {
         String string = "";

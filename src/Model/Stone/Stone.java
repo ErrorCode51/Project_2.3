@@ -14,6 +14,13 @@ public abstract class Stone {
 
     }
 
+    Stone(Stone stone) {
+
+        this.x = stone.getX();
+        this.y = stone.getY();
+
+    }
+
     public byte getX() {
         return x;
     }
