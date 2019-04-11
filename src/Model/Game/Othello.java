@@ -1,6 +1,8 @@
 package Model.Game;
 
 import Controller.NetworkConfigurator;
+import Controller.NetworkForfeitObserver.NetworkForfeitObserver;
+import Controller.NetworkForfeitObserver.NetworkForfeitSubject;
 import Controller.NetworkInputObserver.NetworkInputSubject;
 import Controller.NetworkTurnObserver.NetworkTurnObserver;
 import Controller.NetworkTurnObserver.NetworkTurnSubject;
@@ -19,7 +21,7 @@ import View.OthelloView;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class Othello implements Game, NetworkTurnObserver {
+public class Othello implements Game, NetworkTurnObserver, NetworkForfeitObserver {
 
     public final Player[] players;
     private final OthelloBoard board;
@@ -30,6 +32,7 @@ public class Othello implements Game, NetworkTurnObserver {
     private NetworkPlayer nwPlayer;
     private byte localPosition;
     private boolean yourTurn;
+    private boolean enemyForfeited = false;
 
     public Othello(OthelloView view, boolean usingNetwork) {
 
@@ -105,7 +108,8 @@ public class Othello implements Game, NetworkTurnObserver {
         } else {
             NetworkTurnSubject.subscribe(this);
             NetworkInputSubject.subscribe(nwPlayer);
-            while (rules.gameOver(board) == 'N') {
+            NetworkForfeitSubject.subscribe(this);
+            while (rules.gameOver(board) == 'N' && !enemyForfeited) {
                 if (yourTurn) {
                     currentPlayer = players[localPosition].getIdentifier();
                     handlePlacement(players[localPosition]);
@@ -119,6 +123,7 @@ public class Othello implements Game, NetworkTurnObserver {
             }
             NetworkTurnSubject.unsubscribe(this);
             NetworkInputSubject.unsubscribe(nwPlayer);
+            NetworkForfeitSubject.subscribe(this);
         }
 
         switch (rules.gameOver(board)) {
@@ -189,5 +194,10 @@ public class Othello implements Game, NetworkTurnObserver {
     public void giveTurn() {
         System.err.println("You have been given the turn");
         this.yourTurn = true;
+    }
+
+
+    public void informAboutEnemyForfeit() {
+        this.enemyForfeited = true;
     }
 }
