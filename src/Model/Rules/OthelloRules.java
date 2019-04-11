@@ -63,7 +63,7 @@ public class OthelloRules implements Rules {
             for (byte column = 0; column < board.getSize(); column++) {
                 if (!board.isEmpty(row, column)) {
                     if (board.get(row, column).getIdentifier() == identifier) {
-                        score++;
+                        score += 1;
                     }
                 }
             }
@@ -138,7 +138,6 @@ public class OthelloRules implements Rules {
             }
             if (testForLegal(board, stone, row, column, counter + 1, turnOver)) {
                 if (turnOver) {
-                    // System.out.print("Stone at: " + stoned.getX() + ", " + stoned.getY() + " turned over!\n");
                     stoned.turnOver();
                 }
                 return true;

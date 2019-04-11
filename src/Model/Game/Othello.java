@@ -1,7 +1,7 @@
 package Model.Game;
 
 import Model.Board.OthelloBoard;
-
+import Model.Player.ArtificialOthello;
 import Model.Player.ArtificialPlayer;
 import Model.Player.LocalPlayer;
 import Model.Player.Player;
@@ -38,13 +38,13 @@ public class Othello implements Game {
         //// It appears the appropriate conversion is performed during compile-time and not during
         //// runtime, in short this means performance is not impacted.
         // Set starting positions
-        board.getTiles()[3][3] = new OthelloStone((byte) 3, (byte) 3, 'W');
-        board.getTiles()[3][4] = new OthelloStone((byte) 3, (byte) 4, 'B');
-        board.getTiles()[4][3] = new OthelloStone((byte) 4, (byte) 3, 'B');
-        board.getTiles()[4][4] = new OthelloStone((byte) 4, (byte) 4, 'W');
+        board.set(new OthelloStone((byte) 3, (byte) 3, 'W'));
+        board.set(new OthelloStone((byte) 3, (byte) 4, 'B'));
+        board.set(new OthelloStone((byte) 4, (byte) 3, 'B'));
+        board.set(new OthelloStone((byte) 4, (byte) 4, 'W'));
 
         players[0] = new LocalPlayer('W');
-        players[1] = new LocalPlayer('B');
+        players[1] = new ArtificialOthello('B');
 
     }
 
@@ -89,6 +89,7 @@ public class Othello implements Game {
 
     public boolean handlePlacement(Player player) {
         byte[] placement = player.placeStone(board, rules);
+        // System.out.println("Player returns: " + placement[0] + ", " + placement[1]);
         try {
             if (placement[0] < board.getSize() && placement[1] < board.getSize()) {
                 Stone stone = new OthelloStone(placement[0], placement[1], player.getIdentifier());
@@ -97,8 +98,10 @@ public class Othello implements Game {
                     /////////////////////
                     // SUPER DIRTY FIX //
                     /////////////////////
-                    if (getPlayerByIdentifier(currentPlayer).getClass() == ArtificialPlayer.class) {
-                        ArrayList<Stone> test = ((OthelloRules) rules).findAllLegal(board, currentPlayer);
+                    // if (getPlayerByIdentifier(currentPlayer).getClass() == ArtificialPlayer.class) {
+                    if (getPlayerByIdentifier(currentPlayer).getClass() == ArtificialOthello.class) {
+                        System.err.println("Random placement");
+                        ArrayList<Stone> test = rules.findAllLegal(board, currentPlayer);
                         Random random = new Random();
                         rules.testForLegal(board, test.get(random.nextInt(test.size())), true);
                         return board.set(test.get(random.nextInt(test.size())));
@@ -106,7 +109,7 @@ public class Othello implements Game {
                     return false;
                 }
                 rules.testForLegal(board, stone, true);
-                System.out.println(stone);
+                // System.out.println(stone);
                 return board.set(stone);
             }
         } catch (Exception e) {

@@ -1,6 +1,6 @@
 package Model.Board;
 
-public class OthelloBoard extends Board{
+public class OthelloBoard extends Board {
 
     public OthelloBoard() {
 

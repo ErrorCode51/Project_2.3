@@ -11,7 +11,7 @@ public abstract class Board {
     public static byte size;
     // A board consists of a two dimensional array containing stones
     protected final Stone[][] tiles;
-    private Rules rules;
+    protected Rules rules;
 
     public Board(byte size) {
 
