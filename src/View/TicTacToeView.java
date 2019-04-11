@@ -35,7 +35,7 @@ public class TicTacToeView extends View {
         stage.show();
         //stage.setOnCloseRequest(e -> System.exit(0));
 
-        game = new TicTacToe(this, false);
+        game = new TicTacToe(this, true);
         Thread thread = new Thread(game);
         thread.start();
     }

@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 public class NetworkTurnSubject {
 
-    static ArrayList<NetworkTurnObserver> observers = new ArrayList<>();
+    private static ArrayList<NetworkTurnObserver> observers = new ArrayList<>();
 
     public static synchronized void subscribe(NetworkTurnObserver observer) {
         observers.add(observer);
@@ -17,6 +17,9 @@ public class NetworkTurnSubject {
     }
 
     public static void giveTurn() {
+        while (observers.isEmpty()) {
+            Thread.yield();
+        }
         for (NetworkTurnObserver observer : observers) {
             observer.giveTurn();
         }

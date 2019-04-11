@@ -5,16 +5,15 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.Arrays;
 import java.util.Map;
 
+import Controller.NetworkForfeitObserver.NetworkForfeitSubject;
 import Controller.NetworkInputObserver.NetworkInputSubject;
-import Controller.NetworkTurnObserver.NetworkTurnObserver;
 import Controller.NetworkTurnObserver.NetworkTurnSubject;
 import com.google.common.base.*;
 
 //todo: remove once random string generator is remove from yourturn case
-import java.util.Random;
+
 
 // TODO: 03/04/2019 clean this mess up and make handlers for the switch cases
 
@@ -29,8 +28,10 @@ public class ServerController implements Runnable{
     Map<String, String> splitMap;
     private ClientCommands clientcom = new ClientCommands();
     private String playerToMove;
+    private String GameType;
 
     private static ServerController persistentServerController;
+    private TournamentChecker checktour = new TournamentChecker();
 
 //Open a socket connection to the server if possible
     private void connectToServer(){
@@ -95,7 +96,7 @@ public class ServerController implements Runnable{
 
         String tempString = serverMessage.substring(serverMessage.indexOf("{"));
         tempString = tempString.trim();
-//        Trims the following: { } " and spaces
+//        Trims the following: { } "
         tempString = tempString.replaceAll("[{}\"]", "");
 
         tempString = tempString.replace(", ", ",");
@@ -109,7 +110,6 @@ public class ServerController implements Runnable{
     private void handleSrv(String typeOfMessage){
             switch (typeOfMessage){
                 case "HELP":
-
                     break;
                 case "GAME":
                     gamehandler(splittedMessage[2]);
@@ -125,6 +125,9 @@ public class ServerController implements Runnable{
         switch(gameOption){
             case "MATCH":
                 this.playerToMove = splitMap.get("PLAYERTOMOVE");
+                this.GameType = splitMap.get("GAMETYPE");
+
+                checktour.CheckTournament(GameType);
                 break;
             case "YOURTURN":
                 NetworkTurnSubject.giveTurn();
@@ -132,14 +135,17 @@ public class ServerController implements Runnable{
             case "WIN":
                 System.out.println("You've won!");
                 resetGameData();
+                NetworkForfeitSubject.forfeit();
                 break;
             case "LOSS":
                 System.out.println("You've lost :(");
                 resetGameData();
+                NetworkForfeitSubject.forfeit();
                 break;
             case "DRAW":
                 System.out.println("It's a draw!");
                 resetGameData();
+                NetworkForfeitSubject.forfeit();
                 break;
             case "MOVE":
                 try {
@@ -151,6 +157,9 @@ public class ServerController implements Runnable{
         }
     }
 
+    public String getGame(){
+       return this.GameType;
+    }
 
     public void sendMove(byte[] move) {
         clientcom.move(Integer.toString((move[0] * 3) + move[1]), out);
