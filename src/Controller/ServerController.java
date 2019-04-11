@@ -31,7 +31,7 @@ public class ServerController implements Runnable{
     private String GameType;
 
     private static ServerController persistentServerController;
-    private TournementChecker checktour = new TournementChecker();
+    private TournamentChecker checktour = new TournamentChecker();
 
 //Open a socket connection to the server if possible
     private void connectToServer(){
@@ -127,7 +127,7 @@ public class ServerController implements Runnable{
                 this.playerToMove = splitMap.get("PLAYERTOMOVE");
                 this.GameType = splitMap.get("GAMETYPE");
 
-                checktour.CheckTournement(GameType);
+                checktour.CheckTournament(GameType);
                 break;
             case "YOURTURN":
                 NetworkTurnSubject.giveTurn();
