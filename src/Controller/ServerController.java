@@ -9,6 +9,8 @@ import java.util.Arrays;
 import java.util.Map;
 
 import Controller.NetworkInputObserver.NetworkInputSubject;
+import Controller.NetworkTurnObserver.NetworkTurnObserver;
+import Controller.NetworkTurnObserver.NetworkTurnSubject;
 import com.google.common.base.*;
 
 //todo: remove once random string generator is remove from yourturn case
@@ -125,21 +127,25 @@ public class ServerController implements Runnable{
                 this.playerToMove = splitMap.get("PLAYERTOMOVE");
                 break;
             case "YOURTURN":
-
+                NetworkTurnSubject.giveTurn();
                 break;
             case "WIN":
                 System.out.println("You've won!");
+                resetGameData();
                 break;
             case "LOSS":
                 System.out.println("You've lost :(");
+                resetGameData();
                 break;
             case "DRAW":
                 System.out.println("It's a draw!");
+                resetGameData();
                 break;
             case "MOVE":
                 try {
                     NetworkInputSubject.notify(Byte.parseByte(splitMap.get("MOVE")));
                 } catch (NumberFormatException nfe) {
+                    System.err.println("NumberFormatException");
                 }
                 break;
         }
