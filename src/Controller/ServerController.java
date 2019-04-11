@@ -161,8 +161,8 @@ public class ServerController implements Runnable{
        return this.GameType;
     }
 
-    public void sendMove(byte[] move) {
-        clientcom.move(Integer.toString((move[0] * 3) + move[1]), out);
+    public void sendMove(byte[] move, byte boardSize) {
+        clientcom.move(Integer.toString((move[0] * boardSize) + move[1]), out);
     }
 
 

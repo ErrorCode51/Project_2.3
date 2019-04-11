@@ -124,7 +124,7 @@ public class TicTacToe implements Game, NetworkTurnObserver, NetworkForfeitObser
                 Stone stone = new TicTacToeStone(placement[0], placement[1], player.getIdentifier());
                 // System.out.println(stone);
                 if (controllertje != null && !(player instanceof NetworkPlayer))
-                    controllertje.sendMove(placement);
+                    controllertje.sendMove(placement, this.board.getSize());
                 return board.set(stone);
             }
         }

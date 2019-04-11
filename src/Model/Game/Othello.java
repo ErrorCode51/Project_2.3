@@ -60,8 +60,8 @@ public class Othello implements Game, NetworkTurnObserver, NetworkForfeitObserve
 
 
         if (!usingNetwork) {
-            players[0] = new LocalPlayer('X');
-            players[1] = new ArtificialPlayer('O');
+            players[0] = new LocalPlayer('W');
+            players[1] = new ArtificialPlayer('B');
         } else {
             this.controllertje = ServerController.getPersistentServerController();
 
@@ -70,14 +70,14 @@ public class Othello implements Game, NetworkTurnObserver, NetworkForfeitObserve
             }
 
             if (controllertje.getPlayerToMove().equals(NetworkConfigurator.getProperty("PLAYER_NAME"))) {
-                players[0] = new LocalPlayer('W');
-                nwPlayer = new NetworkPlayer('B');
+                players[0] = new ArtificialOthello('B');
+                nwPlayer = new NetworkPlayer('W');
                 players[1] = nwPlayer;
                 localPosition = 0;
             } else {
-                nwPlayer = new NetworkPlayer('W');
+                nwPlayer = new NetworkPlayer('B');
                 players[0] = nwPlayer;
-                players[1] = new LocalPlayer('B');
+                players[1] = new ArtificialOthello('W');
                 localPosition = 1;
             }
         }
@@ -113,7 +113,9 @@ public class Othello implements Game, NetworkTurnObserver, NetworkForfeitObserve
             while (rules.gameOver(board) == 'N' && !enemyForfeited) {
                 if (yourTurn) {
                     currentPlayer = players[localPosition].getIdentifier();
+                    System.err.println("Atrificialplayer is moving");
                     handlePlacement(players[localPosition]);
+                    System.err.println("Atrificialplayer has made a move");
                     view.setBoard(board);
                     yourTurn = false;
                     currentPlayer = nwPlayer.getIdentifier();
@@ -153,21 +155,13 @@ public class Othello implements Game, NetworkTurnObserver, NetworkForfeitObserve
                 Stone stone = new OthelloStone(placement[0], placement[1], player.getIdentifier());
                 // Todo: stop calling this method twice you idiot!
                 if (!rules.testForLegal(board, stone, false)) {
-                    /////////////////////
-                    // SUPER DIRTY FIX //
-                    /////////////////////
-                    // if (getPlayerByIdentifier(currentPlayer).getClass() == ArtificialPlayer.class) {
-                    if (getPlayerByIdentifier(currentPlayer).getClass() == ArtificialOthello.class) {
-                        System.err.println("Random placement");
-                        ArrayList<Stone> test = rules.findAllLegal(board, currentPlayer);
-                        Random random = new Random();
-                        rules.testForLegal(board, test.get(random.nextInt(test.size())), true);
-                        return board.set(test.get(random.nextInt(test.size())));
-                    }
                     return false;
                 }
                 rules.testForLegal(board, stone, true);
-                // System.out.println(stone);
+
+                if (controllertje != null && !(player instanceof NetworkPlayer))
+                    controllertje.sendMove(placement, this.board.getSize());
+
                 return board.set(stone);
             }
         } catch (Exception e) {
