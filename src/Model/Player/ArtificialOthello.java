@@ -100,29 +100,29 @@ public class ArtificialOthello implements Player {
                 // Because we limit recursion we score based on the amount of stones turned
                 if (stone.getIdentifier() == this.identifier) {
                     byte score = temporaryBoard.getScoreByIdentifier(stone.getIdentifier());
+                    // Add score if placement wins the match
+                    if (rules.gameOver(temporaryBoard) == stone.getIdentifier()) {
+                        score += 30;
+                    }
+                    // Add extra score if placement is in a corner
+                    if (stone.getX() == 0 && stone.getY() == 0 || stone.getX() == 0 && stone.getY() == 7 ||
+                            stone.getX() == 7 && stone.getY() == 0 || stone.getX() == 7 && stone.getY() == 7) {
+                        score += 15;
+                    }
+                    // Add extra score if placement is a stone controlling a corner
+                    if (stone.getX() == 0 && stone.getY() == 2 || stone.getX() == 2 && stone.getY() == 0 ||
+                            stone.getX() == 0 && stone.getY() == 5 || stone.getX() == 5 && stone.getY() == 0 ||
+                            stone.getX() == 7 && stone.getY() == 2 || stone.getX() == 7 && stone.getY() == 5 ||
+                            stone.getX() == 2 && stone.getY() == 7 || stone.getX() == 5 && stone.getY() == 7) {
+                        score += 10;
+                    }
+                    // Add extra score if placement is a stone controlling a stone controlling a corner
+                    if (stone.getX() == 2 && stone.getY() == 2 || stone.getX() == 2 && stone.getY() == 5 ||
+                            stone.getX() == 5 && stone.getY() == 5 || stone.getX() == 5 && stone.getY() == 2) {
+                        score += 5;
+                    }
                     if (score > node.getMaximumScore()) {
                         node.setMaximumScore(score);
-                        // Add score if placement wins the match
-                        if (rules.gameOver(temporaryBoard) == stone.getIdentifier()) {
-                            score += 30;
-                        }
-                        // Add extra score if placement is in a corner
-                        if (stone.getX() == 0 && stone.getY() == 0 || stone.getX() == 0 && stone.getY() == 7 ||
-                                stone.getX() == 7 && stone.getY() == 0 || stone.getX() == 7 && stone.getY() == 7) {
-                            score += 15;
-                        }
-                        // Add extra score if placement is a stone controlling a corner
-                        if (stone.getX() == 0 && stone.getY() == 2 || stone.getX() == 2 && stone.getY() == 0 ||
-                                stone.getX() == 0 && stone.getY() == 5 || stone.getX() == 5 && stone.getY() == 0 ||
-                                stone.getX() == 7 && stone.getY() == 2 || stone.getX() == 7 && stone.getY() == 5 ||
-                                stone.getX() == 2 && stone.getY() == 7 || stone.getX() == 5 && stone.getY() == 7) {
-                            score += 10;
-                        }
-                        // Add extra score if placement is a stone controlling a stone controlling a corner
-                        if (stone.getX() == 2 && stone.getY() == 2 || stone.getX() == 2 && stone.getY() == 5 ||
-                                stone.getX() == 5 && stone.getY() == 5 || stone.getX() == 5 && stone.getY() == 2) {
-                            score += 5;
-                        }
                         if (node.getPrevious() != null) {
                             if (score > node.getPrevious().getMaximumScore()) {
                                 node.getPrevious().setMaximumScore(score);
@@ -151,7 +151,7 @@ public class ArtificialOthello implements Player {
                     if (score < node.getMinimumScore()) {
                         node.setMinimumScore(score);
                         if (node.getPrevious() != null) {
-                            if (score < node.getPrevious().getMaximumScore()) {
+                            if (score < node.getPrevious().getMinimumScore()) {
                                 node.getPrevious().setMinimumScore(score);
                             }
                         }
