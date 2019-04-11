@@ -1,9 +1,15 @@
 package Model.Game;
 
+import Controller.NetworkConfigurator;
+import Controller.NetworkInputObserver.NetworkInputSubject;
+import Controller.NetworkTurnObserver.NetworkTurnObserver;
+import Controller.NetworkTurnObserver.NetworkTurnSubject;
+import Controller.ServerController;
 import Model.Board.OthelloBoard;
 
 import Model.Player.ArtificialPlayer;
 import Model.Player.LocalPlayer;
+import Model.Player.NetworkPlayer;
 import Model.Player.Player;
 import Model.Rules.OthelloRules;
 import Model.Stone.OthelloStone;
@@ -13,13 +19,17 @@ import View.OthelloView;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class Othello implements Game {
+public class Othello implements Game, NetworkTurnObserver {
 
     public final Player[] players;
     private final OthelloBoard board;
     private final OthelloRules rules;
     private final OthelloView view;
     private char currentPlayer;
+    private ServerController controllertje;
+    private NetworkPlayer nwPlayer;
+    private byte localPosition;
+    private boolean yourTurn;
 
     public Othello(OthelloView view, boolean usingNetwork) {
 
@@ -42,9 +52,31 @@ public class Othello implements Game {
         board.getTiles()[3][4] = new OthelloStone((byte) 3, (byte) 4, 'B');
         board.getTiles()[4][3] = new OthelloStone((byte) 4, (byte) 3, 'B');
         board.getTiles()[4][4] = new OthelloStone((byte) 4, (byte) 4, 'W');
+        view.setBoard(board);
 
-        players[0] = new LocalPlayer('W');
-        players[1] = new LocalPlayer('B');
+
+        if (!usingNetwork) {
+            players[0] = new LocalPlayer('X');
+            players[1] = new ArtificialPlayer('O');
+        } else {
+            this.controllertje = ServerController.getPersistentServerController();
+
+            while (controllertje.getPlayerToMove() == null) {
+                Thread.yield();
+            }
+
+            if (controllertje.getPlayerToMove().equals(NetworkConfigurator.getProperty("PLAYER_NAME"))) {
+                players[0] = new LocalPlayer('W');
+                nwPlayer = new NetworkPlayer('B');
+                players[1] = nwPlayer;
+                localPosition = 0;
+            } else {
+                nwPlayer = new NetworkPlayer('W');
+                players[0] = nwPlayer;
+                players[1] = new LocalPlayer('B');
+                localPosition = 1;
+            }
+        }
 
     }
 
@@ -58,17 +90,37 @@ public class Othello implements Game {
             } catch (Exception e) {
             }
         }
-        currentPlayer = 'W';
-        while (rules.gameOver(board) == 'N') {
-            if (rules.findAllLegal(board, currentPlayer).size() < 1) {
-                System.err.println(currentPlayer + " skips a turn!");
-                changePlayer();
+        if (controllertje == null) {
+            currentPlayer = 'W';
+            while (rules.gameOver(board) == 'N') {
+                if (rules.findAllLegal(board, currentPlayer).size() < 1) {
+                    System.err.println(currentPlayer + " skips a turn!");
+                    changePlayer();
+                }
+                if (handlePlacement(getPlayerByIdentifier(currentPlayer))) {
+                    view.setBoard(board);
+                    changePlayer();
+                }
             }
-            if (handlePlacement(getPlayerByIdentifier(currentPlayer))) {
-                view.setBoard(board);
-                changePlayer();
+        } else {
+            NetworkTurnSubject.subscribe(this);
+            NetworkInputSubject.subscribe(nwPlayer);
+            while (rules.gameOver(board) == 'N') {
+                if (yourTurn) {
+                    currentPlayer = players[localPosition].getIdentifier();
+                    handlePlacement(players[localPosition]);
+                    view.setBoard(board);
+                    yourTurn = false;
+                    currentPlayer = nwPlayer.getIdentifier();
+                } else if (nwPlayer.moveAvailable()) {
+                    handlePlacement(nwPlayer);
+                    view.setBoard(board);
+                }
             }
+            NetworkTurnSubject.unsubscribe(this);
+            NetworkInputSubject.unsubscribe(nwPlayer);
         }
+
         switch (rules.gameOver(board)) {
             case 'D':
                 System.out.println(rules.getScore(board, 'B') + " vs. " + rules.getScore(board, 'W'));
@@ -131,5 +183,11 @@ public class Othello implements Game {
     public void changePlayer() {
         board.gameOver(board);
         currentPlayer = (currentPlayer == 'B') ? 'W' : 'B';
+    }
+
+
+    public void giveTurn() {
+        System.err.println("You have been given the turn");
+        this.yourTurn = true;
     }
 }

@@ -5,16 +5,15 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.Arrays;
 import java.util.Map;
 
+import Controller.NetworkForfeitObserver.NetworkForfeitSubject;
 import Controller.NetworkInputObserver.NetworkInputSubject;
-import Controller.NetworkTurnObserver.NetworkTurnObserver;
 import Controller.NetworkTurnObserver.NetworkTurnSubject;
 import com.google.common.base.*;
 
 //todo: remove once random string generator is remove from yourturn case
-import java.util.Random;
+
 
 // TODO: 03/04/2019 clean this mess up and make handlers for the switch cases
 
@@ -136,14 +135,17 @@ public class ServerController implements Runnable{
             case "WIN":
                 System.out.println("You've won!");
                 resetGameData();
+                NetworkForfeitSubject.forfeit();
                 break;
             case "LOSS":
                 System.out.println("You've lost :(");
                 resetGameData();
+                NetworkForfeitSubject.forfeit();
                 break;
             case "DRAW":
                 System.out.println("It's a draw!");
                 resetGameData();
+                NetworkForfeitSubject.forfeit();
                 break;
             case "MOVE":
                 try {

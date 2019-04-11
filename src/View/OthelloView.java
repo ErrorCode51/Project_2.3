@@ -34,7 +34,7 @@ public class OthelloView extends View {
         stage.show();
         //stage.setOnCloseRequest(e -> System.exit(0));
 
-        Othello game = new Othello(this, false);
+        Othello game = new Othello(this, true);
         Thread thread = new Thread(game);
         thread.start();
     }

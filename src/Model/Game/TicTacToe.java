@@ -1,6 +1,8 @@
 package Model.Game;
 
 import Controller.NetworkConfigurator;
+import Controller.NetworkForfeitObserver.NetworkForfeitObserver;
+import Controller.NetworkForfeitObserver.NetworkForfeitSubject;
 import Controller.NetworkInputObserver.NetworkInputObserver;
 import Controller.NetworkInputObserver.NetworkInputSubject;
 import Controller.NetworkTurnObserver.NetworkTurnObserver;
@@ -18,7 +20,7 @@ import Model.Stone.Stone;
 import Model.Stone.TicTacToeStone;
 import View.TicTacToeView;
 
-public class TicTacToe implements Game, NetworkTurnObserver {
+public class TicTacToe implements Game, NetworkTurnObserver, NetworkForfeitObserver {
 
     public final Player[] players;
     private final TicTacToeBoard board;
@@ -30,6 +32,7 @@ public class TicTacToe implements Game, NetworkTurnObserver {
     private boolean yourTurn;
     private byte localPosition;
     private NetworkPlayer nwPlayer;
+    private boolean enemyForfeited = false;
 
     public TicTacToe(TicTacToeView view, boolean usingNetwork) {
 
@@ -87,7 +90,8 @@ public class TicTacToe implements Game, NetworkTurnObserver {
         } else {
             NetworkTurnSubject.subscribe(this);
             NetworkInputSubject.subscribe(nwPlayer);
-            while (rules.gameOver(board) == 'N') {
+            NetworkForfeitSubject.subscribe(this);
+            while (rules.gameOver(board) == 'N' && !enemyForfeited) {
                 if (yourTurn) {
                     handlePlacement(players[localPosition]);
                     view.setBoard(board);
@@ -99,6 +103,7 @@ public class TicTacToe implements Game, NetworkTurnObserver {
             }
             NetworkTurnSubject.unsubscribe(this);
             NetworkInputSubject.unsubscribe(nwPlayer);
+            NetworkForfeitSubject.unsubscribe(this);
         }
 
         switch (rules.gameOver(board)) {
@@ -161,6 +166,11 @@ public class TicTacToe implements Game, NetworkTurnObserver {
     public void giveTurn() {
         System.err.println("You have been given the turn");
         this.yourTurn = true;
+    }
+
+
+    public void informAboutEnemyForfeit() {
+        this.enemyForfeited = true;
     }
 
 }
