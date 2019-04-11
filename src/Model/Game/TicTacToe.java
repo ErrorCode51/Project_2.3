@@ -1,6 +1,10 @@
 package Model.Game;
 
 import Controller.NetworkConfigurator;
+import Controller.NetworkInputObserver.NetworkInputObserver;
+import Controller.NetworkInputObserver.NetworkInputSubject;
+import Controller.NetworkTurnObserver.NetworkTurnObserver;
+import Controller.NetworkTurnObserver.NetworkTurnSubject;
 import Controller.ServerController;
 import Model.Board.Board;
 import Model.Board.TicTacToeBoard;
@@ -14,7 +18,7 @@ import Model.Stone.Stone;
 import Model.Stone.TicTacToeStone;
 import View.TicTacToeView;
 
-public class TicTacToe implements Game {
+public class TicTacToe implements Game, NetworkTurnObserver {
 
     public final Player[] players;
     private final TicTacToeBoard board;
@@ -22,6 +26,10 @@ public class TicTacToe implements Game {
     private final TicTacToeView view;
     private char currentPlayer;
     private ServerController controllertje;
+
+    private boolean yourTurn;
+    private byte localPosition;
+    private NetworkPlayer nwPlayer;
 
     public TicTacToe(TicTacToeView view, boolean usingNetwork) {
 
@@ -37,20 +45,23 @@ public class TicTacToe implements Game {
             players[0] = new LocalPlayer('X');
             players[1] = new ArtificialPlayer('O');
         } else {
-            this.controllertje = new ServerController();
-            Thread t = new Thread(controllertje);
-            t.start();
+            this.controllertje = ServerController.getPersistentServerController();
+//            controllertje.resetGameData();
 
             while (controllertje.getPlayerToMove() == null) {
                 Thread.yield();
             }
 
-            if (controllertje.getPlayerToMove().equals(NetworkConfigurator.getPropertie("PLAYER_NAME"))) {
-                players[0] = new ArtificialPlayer('X');
-                players[1] = new NetworkPlayer('O');
+            if (controllertje.getPlayerToMove().equals(NetworkConfigurator.getProperty("PLAYER_NAME"))) {
+                players[0] = new LocalPlayer('X');
+                nwPlayer = new NetworkPlayer('O');
+                players[1] = nwPlayer;
+                localPosition = 0;
             } else {
-                players[0] = new NetworkPlayer('X');
-                players[1] = new ArtificialPlayer('O');
+                nwPlayer = new NetworkPlayer('X');
+                players[0] = nwPlayer;
+                players[1] = new LocalPlayer('O');
+                localPosition = 1;
             }
         }
     }
@@ -66,12 +77,30 @@ public class TicTacToe implements Game {
             catch (Exception e) {}
         }
         currentPlayer = 'X';
-        while (rules.gameOver(board) == 'N') {
-            if (handlePlacement(getPlayerByIdentifier(currentPlayer))) {
-                view.setBoard(board);
-                changePlayer();
+        if (controllertje == null) {
+            while (rules.gameOver(board) == 'N') {
+                if (handlePlacement(getPlayerByIdentifier(currentPlayer))) {
+                    view.setBoard(board);
+                    changePlayer();
+                }
             }
+        } else {
+            NetworkTurnSubject.subscribe(this);
+            NetworkInputSubject.subscribe(nwPlayer);
+            while (rules.gameOver(board) == 'N') {
+                if (yourTurn) {
+                    handlePlacement(players[localPosition]);
+                    view.setBoard(board);
+                    yourTurn = false;
+                } else if (nwPlayer.moveAvailable()) {
+                    handlePlacement(nwPlayer);
+                    view.setBoard(board);
+                }
+            }
+            NetworkTurnSubject.unsubscribe(this);
+            NetworkInputSubject.unsubscribe(nwPlayer);
         }
+
         switch (rules.gameOver(board)) {
             case 'D':
                 System.err.println("It's a draw");
@@ -126,6 +155,12 @@ public class TicTacToe implements Game {
     public void changePlayer() {
         board.gameOver(board);
         currentPlayer = (currentPlayer == 'X') ? 'O' : 'X';
+    }
+
+
+    public void giveTurn() {
+        System.err.println("You have been given the turn");
+        this.yourTurn = true;
     }
 
 }

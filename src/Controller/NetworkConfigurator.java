@@ -24,7 +24,7 @@ public class NetworkConfigurator {
     }
 
 
-    public static String getPropertie(String propName) {
+    public static String getProperty(String propName) {
         return networkProps.get(propName).toString();
     }
 
