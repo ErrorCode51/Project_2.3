@@ -5,20 +5,21 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.Arrays;
 import java.util.Map;
 
+import Controller.NetworkForfeitObserver.NetworkForfeitSubject;
 import Controller.NetworkInputObserver.NetworkInputSubject;
+import Controller.NetworkTurnObserver.NetworkTurnSubject;
 import com.google.common.base.*;
 
 //todo: remove once random string generator is remove from yourturn case
-import java.util.Random;
+
 
 // TODO: 03/04/2019 clean this mess up and make handlers for the switch cases
 
 public class ServerController implements Runnable{
-    private final String host = NetworkConfigurator.getPropertie("SERVER_IP");
-    private final int portNumber = Integer.parseInt(NetworkConfigurator.getPropertie("SERVER_PORT"));
+    private final String host = NetworkConfigurator.getProperty("SERVER_IP");
+    private final int portNumber = Integer.parseInt(NetworkConfigurator.getProperty("SERVER_PORT"));
     private PrintWriter out;
     private BufferedReader br;
     private Socket socket;
@@ -27,6 +28,10 @@ public class ServerController implements Runnable{
     Map<String, String> splitMap;
     private ClientCommands clientcom = new ClientCommands();
     private String playerToMove;
+    private String GameType;
+
+    private static ServerController persistentServerController;
+    private TournamentChecker checktour = new TournamentChecker();
 
 //Open a socket connection to the server if possible
     private void connectToServer(){
@@ -47,7 +52,7 @@ public class ServerController implements Runnable{
 //        TODO: Make the client do login and sub instead of hardcode, hardcode only for testing
     public void run()  {
         connectToServer();
-        clientcom.loginToServer(NetworkConfigurator.getPropertie("PLAYER_NAME"), out);
+        clientcom.loginToServer(NetworkConfigurator.getProperty("PLAYER_NAME"), out);
         clientcom.subTogame("Tic-tac-toe",out);
         while(running){
             handleMessage();
@@ -59,6 +64,8 @@ public class ServerController implements Runnable{
     private void handleMessage(){
         try {
             String servmessage = br.readLine();
+
+            System.out.println(servmessage);
 
             if (servmessage.contains("{")) {
                 genMap(servmessage);
@@ -89,11 +96,13 @@ public class ServerController implements Runnable{
 
         String tempString = serverMessage.substring(serverMessage.indexOf("{"));
         tempString = tempString.trim();
-//        Trims the following: { } " and spaces
-        tempString = tempString.replaceAll("[{}\" ]", "");
+//        Trims the following: { } "
+        tempString = tempString.replaceAll("[{}\"]", "");
+
+        tempString = tempString.replace(", ", ",");
+        tempString = tempString.replace(": ", ":");
 
         splitMap = Splitter.on(",").withKeyValueSeparator(":").split(tempString);
-
     }
 
 
@@ -101,7 +110,6 @@ public class ServerController implements Runnable{
     private void handleSrv(String typeOfMessage){
             switch (typeOfMessage){
                 case "HELP":
-
                     break;
                 case "GAME":
                     gamehandler(splittedMessage[2]);
@@ -117,25 +125,41 @@ public class ServerController implements Runnable{
         switch(gameOption){
             case "MATCH":
                 this.playerToMove = splitMap.get("PLAYERTOMOVE");
+                this.GameType = splitMap.get("GAMETYPE");
+
+                checktour.CheckTournament(GameType);
                 break;
             case "YOURTURN":
-
+                NetworkTurnSubject.giveTurn();
                 break;
             case "WIN":
                 System.out.println("You've won!");
+                resetGameData();
+                NetworkForfeitSubject.forfeit();
                 break;
             case "LOSS":
                 System.out.println("You've lost :(");
+                resetGameData();
+                NetworkForfeitSubject.forfeit();
                 break;
             case "DRAW":
                 System.out.println("It's a draw!");
+                resetGameData();
+                NetworkForfeitSubject.forfeit();
                 break;
             case "MOVE":
-                NetworkInputSubject.notify(Byte.parseByte(splitMap.get("MOVE")));
+                try {
+                    NetworkInputSubject.notify(Byte.parseByte(splitMap.get("MOVE")));
+                } catch (NumberFormatException nfe) {
+                    System.err.println("NumberFormatException");
+                }
                 break;
         }
     }
 
+    public String getGame(){
+       return this.GameType;
+    }
 
     public void sendMove(byte[] move) {
         clientcom.move(Integer.toString((move[0] * 3) + move[1]), out);
@@ -144,5 +168,24 @@ public class ServerController implements Runnable{
 
     public String getPlayerToMove() {
         return this.playerToMove;
+    }
+
+    public void resetGameData() {
+        playerToMove = null;
+    }
+
+
+    public static void createPersistentServerController() {
+        persistentServerController = new ServerController();
+        Thread t = new Thread(persistentServerController);
+        t.start();
+    }
+
+
+    public static ServerController getPersistentServerController() {
+        if (persistentServerController == null) {
+            createPersistentServerController();
+        }
+        return persistentServerController;
     }
 }
