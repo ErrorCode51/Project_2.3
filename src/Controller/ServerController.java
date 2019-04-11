@@ -29,8 +29,10 @@ public class ServerController implements Runnable{
     Map<String, String> splitMap;
     private ClientCommands clientcom = new ClientCommands();
     private String playerToMove;
+    private String GameType;
 
     private static ServerController persistentServerController;
+    private TournementChecker checktour = new TournementChecker();
 
 //Open a socket connection to the server if possible
     private void connectToServer(){
@@ -95,7 +97,7 @@ public class ServerController implements Runnable{
 
         String tempString = serverMessage.substring(serverMessage.indexOf("{"));
         tempString = tempString.trim();
-//        Trims the following: { } " and spaces
+//        Trims the following: { } "
         tempString = tempString.replaceAll("[{}\"]", "");
 
         tempString = tempString.replace(", ", ",");
@@ -109,7 +111,6 @@ public class ServerController implements Runnable{
     private void handleSrv(String typeOfMessage){
             switch (typeOfMessage){
                 case "HELP":
-
                     break;
                 case "GAME":
                     gamehandler(splittedMessage[2]);
@@ -125,6 +126,9 @@ public class ServerController implements Runnable{
         switch(gameOption){
             case "MATCH":
                 this.playerToMove = splitMap.get("PLAYERTOMOVE");
+                this.GameType = splitMap.get("GAMETYPE");
+
+                checktour.CheckTournement(GameType);
                 break;
             case "YOURTURN":
                 NetworkTurnSubject.giveTurn();
@@ -151,6 +155,9 @@ public class ServerController implements Runnable{
         }
     }
 
+    public String getGame(){
+       return this.GameType;
+    }
 
     public void sendMove(byte[] move) {
         clientcom.move(Integer.toString((move[0] * 3) + move[1]), out);

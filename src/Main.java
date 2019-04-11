@@ -1,4 +1,5 @@
 import Controller.NetworkConfigurator;
+import Controller.ServerController;
 import View.Homescreen;
 import View.TicTacToeView;
 
@@ -8,6 +9,10 @@ class Main {
 
     public static void main(String[] args) {
         NetworkConfigurator.loadPropFile();
+
+        // FOR TESTING todo: REMOVE WHEN DONE TESTING FFS
+        ServerController.createPersistentServerController();
+
 
         launch(Homescreen.class, args);
     }
