@@ -10,6 +10,8 @@ public class OthelloView extends View {
 
     private final Cell[][] CELL = new Cell[8][8];
 
+    private String currentPlayer;
+
     public OthelloView() {
         Stage stage = new Stage();
         GridPane pane = new GridPane();
@@ -42,7 +44,13 @@ public class OthelloView extends View {
         return CELL;
     }
 
-
+    public void setCurrentPlayer(String currentPlayer, String scoreW, String scoreB){
+        if (currentPlayer.equals("W")) {
+            statusLabel.setText("Turn: white            White has " + scoreW + " points Black has " + scoreB + " points");
+        }else{
+            statusLabel.setText("Turn: black            White has " + scoreW + " points Black has " + scoreB + " points");
+        }
+    }
 }
 
 

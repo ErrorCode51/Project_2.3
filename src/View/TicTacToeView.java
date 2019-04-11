@@ -11,6 +11,8 @@ public class TicTacToeView extends View {
 
     private final Cell[][] CELL = new Cell[3][3];
 
+    private String currentPlayer;
+
     @Override
     public Cell[][] getCell() {
         return CELL;
@@ -38,6 +40,11 @@ public class TicTacToeView extends View {
         game = new TicTacToe(this, false);
         Thread thread = new Thread(game);
         thread.start();
+    }
+
+    public void setCurrentPlayer(String currentPlayer){
+        //System.out.println(currentPlayer);
+        statusLabel.setText(currentPlayer);
     }
 
 }

@@ -13,6 +13,7 @@ import Model.Rules.TicTacToeRules;
 import Model.Stone.Stone;
 import Model.Stone.TicTacToeStone;
 import View.TicTacToeView;
+import javafx.application.Platform;
 
 public class TicTacToe implements Game {
 
@@ -67,6 +68,7 @@ public class TicTacToe implements Game {
         }
         currentPlayer = 'X';
         while (rules.gameOver(board) == 'N') {
+            //Platform.runLater(()-> passCurrentPlayer());
             if (handlePlacement(getPlayerByIdentifier(currentPlayer))) {
                 view.setBoard(board);
                 changePlayer();
@@ -126,6 +128,10 @@ public class TicTacToe implements Game {
     public void changePlayer() {
         board.gameOver(board);
         currentPlayer = (currentPlayer == 'X') ? 'O' : 'X';
+    }
+
+    public void passCurrentPlayer(){
+        view.setCurrentPlayer(String.valueOf(getCurrentPlayer()));
     }
 
 }

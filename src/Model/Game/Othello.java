@@ -9,6 +9,7 @@ import Model.Rules.OthelloRules;
 import Model.Stone.OthelloStone;
 import Model.Stone.Stone;
 import View.OthelloView;
+import javafx.application.Platform;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -48,6 +49,18 @@ public class Othello implements Game {
 
     }
 
+    public void passCurrentPlayerScore(){
+        view.setCurrentPlayer(String.valueOf(getCurrentPlayer()), String.valueOf(getScoreW()), String.valueOf(getScoreB()));
+    }
+
+    public byte getScoreW(){
+        return rules.getScore(board, 'W');
+    }
+
+    public byte getScoreB(){
+        return rules.getScore(board, 'B');
+    }
+
     @Override
     public void run() {
         while (rules.gameOver(board) == 'N') {
@@ -60,6 +73,9 @@ public class Othello implements Game {
         }
         currentPlayer = 'W';
         while (rules.gameOver(board) == 'N') {
+            Platform.runLater(()->{
+                passCurrentPlayerScore();
+            });
             if (rules.findAllLegal(board, currentPlayer).size() < 1) {
                 System.err.println(currentPlayer + " skips a turn!");
                 changePlayer();
@@ -128,6 +144,10 @@ public class Othello implements Game {
         // Todo: Fix this null thing.
         System.out.println("getPlayerByIdentifier will return null");
         return null;
+    }
+
+    public char getCurrentPlayer(){
+        return currentPlayer;
     }
 
     // Change the current player to the next player
