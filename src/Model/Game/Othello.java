@@ -63,9 +63,9 @@ public class Othello implements Game, NetworkTurnObserver, NetworkForfeitObserve
                 case 0:
                     if (new Random().nextBoolean()) {
                         players[0] = new LocalPlayer('W');
-                        players[1] = new ArtificialPlayer('B');
+                        players[1] = new ArtificialOthello('B');
                     } else {
-                        players[0] = new ArtificialPlayer('W');
+                        players[0] = new ArtificialOthello('W');
                         players[1] = new LocalPlayer('B');
                     }
                     break;
@@ -74,8 +74,8 @@ public class Othello implements Game, NetworkTurnObserver, NetworkForfeitObserve
                     players[1] = new LocalPlayer('B');
                     break;
                 case 2:
-                    players[0] = new ArtificialPlayer('W');
-                    players[1] = new ArtificialPlayer('B');
+                    players[0] = new ArtificialOthello('W');
+                    players[1] = new ArtificialOthello('B');
                     break;
             }
         } else if (gameMode < 20) {
@@ -87,11 +87,15 @@ public class Othello implements Game, NetworkTurnObserver, NetworkForfeitObserve
             }
 
             if (controllertje.getPlayerToMove().equals(NetworkConfigurator.getProperty("PLAYER_NAME"))) {
-                players[1] = new NetworkPlayer('W');
+                nwPlayer = new NetworkPlayer('W');
+                players[1] = nwPlayer;
                 localPosition = 0;
+                System.err.println("You play black");
             } else {
-                players[0] = new NetworkPlayer('B');
+                nwPlayer = new NetworkPlayer('B');
+                players[0] = nwPlayer;
                 localPosition = 1;
+                System.err.println("You play white");
             }
 
             switch (gameMode) {
@@ -99,7 +103,7 @@ public class Othello implements Game, NetworkTurnObserver, NetworkForfeitObserve
                     players[localPosition] = new LocalPlayer((localPosition == 0) ? 'B' : 'W');
                     break;
                 case 11:
-                    players[localPosition] = new ArtificialPlayer((localPosition == 0) ? 'B' : 'W');
+                    players[localPosition] = new ArtificialOthello((localPosition == 0) ? 'B' : 'W');
                     break;
             }
         }
@@ -134,9 +138,7 @@ public class Othello implements Game, NetworkTurnObserver, NetworkForfeitObserve
             while (rules.gameOver(board) == 'N' && !enemyForfeited) {
                 if (yourTurn) {
                     currentPlayer = players[localPosition].getIdentifier();
-                    System.err.println("Atrificialplayer is moving");
                     handlePlacement(players[localPosition]);
-                    System.err.println("Atrificialplayer has made a move");
                     view.setBoard(board);
                     yourTurn = false;
                     currentPlayer = nwPlayer.getIdentifier();
