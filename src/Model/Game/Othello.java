@@ -34,7 +34,7 @@ public class Othello implements Game, NetworkTurnObserver, NetworkForfeitObserve
     private boolean yourTurn;
     private boolean enemyForfeited = false;
 
-    public Othello(OthelloView view, boolean usingNetwork) {
+    public Othello(OthelloView view, byte gameMode) {
 
         board = new OthelloBoard();
         players = new Player[2];
@@ -58,30 +58,51 @@ public class Othello implements Game, NetworkTurnObserver, NetworkForfeitObserve
         board.getTiles()[4][4] = new OthelloStone((byte) 4, (byte) 4, 'W');
         view.setBoard(board);
 
-
-        if (!usingNetwork) {
-            players[0] = new LocalPlayer('W');
-            players[1] = new ArtificialPlayer('B');
-        } else {
+        if (gameMode < 10) {
+            switch (gameMode) {
+                case 0:
+                    if (new Random().nextBoolean()) {
+                        players[0] = new LocalPlayer('W');
+                        players[1] = new ArtificialPlayer('B');
+                    } else {
+                        players[0] = new ArtificialPlayer('W');
+                        players[1] = new LocalPlayer('B');
+                    }
+                    break;
+                case 1:
+                    players[0] = new LocalPlayer('W');
+                    players[1] = new LocalPlayer('B');
+                    break;
+                case 2:
+                    players[0] = new ArtificialPlayer('W');
+                    players[1] = new ArtificialPlayer('B');
+                    break;
+            }
+        } else if (gameMode < 20) {
             this.controllertje = ServerController.getPersistentServerController();
+//            controllertje.resetGameData();
 
             while (controllertje.getPlayerToMove() == null) {
                 Thread.yield();
             }
 
             if (controllertje.getPlayerToMove().equals(NetworkConfigurator.getProperty("PLAYER_NAME"))) {
-                players[0] = new ArtificialOthello('B');
-                nwPlayer = new NetworkPlayer('W');
-                players[1] = nwPlayer;
+                players[1] = new NetworkPlayer('W');
                 localPosition = 0;
             } else {
-                nwPlayer = new NetworkPlayer('B');
-                players[0] = nwPlayer;
-                players[1] = new ArtificialOthello('W');
+                players[0] = new NetworkPlayer('B');
                 localPosition = 1;
             }
-        }
 
+            switch (gameMode) {
+                case 10:
+                    players[localPosition] = new LocalPlayer((localPosition == 0) ? 'B' : 'W');
+                    break;
+                case 11:
+                    players[localPosition] = new ArtificialPlayer((localPosition == 0) ? 'B' : 'W');
+                    break;
+            }
+        }
     }
 
     @Override

@@ -22,10 +22,10 @@ public class Homescreen extends Application {
         TextField nameInput = new TextField();
 
         Button openTTT = new Button("Open Tictactoe");
-        openTTT.setOnAction(event -> new TicTacToeView());
+        openTTT.setOnAction(event -> new TicTacToeView((byte) 1));
 
         Button othello = new Button("Open othello");
-        othello.setOnAction(event -> new OthelloView());
+        othello.setOnAction(event -> new OthelloView((byte) 1));
 
         Button ai = new Button("AI");
 
@@ -33,7 +33,7 @@ public class Homescreen extends Application {
 
         vBox.getChildren().addAll(name, nameInput, openTTT, othello, ai, human);
 
-        othello.setOnAction(event -> new OthelloView());
+        othello.setOnAction(event -> new OthelloView((byte) 1));
 
         primaryStage.setScene(scene);
         primaryStage.show();
