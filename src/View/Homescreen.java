@@ -6,6 +6,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -24,11 +25,25 @@ public class Homescreen extends Application {
 
         TextField nameInput = new TextField();
 
-        Button openTTT = new Button("Open Tictactoe");
-        openTTT.setOnAction(event -> new TicTacToeView((byte) 1));
+        Label tttLabel = new Label("Tic-Tac-Toe:");
+        HBox tttHBox = new HBox();
+        Button tttBtn1 = new Button("Human vs AI");
+        tttBtn1.setOnAction(event -> new TicTacToeView((byte) 0));
+        Button tttBtn2 = new Button("Human vs Human");
+        tttBtn2.setOnAction(event -> new TicTacToeView((byte) 1));
+        Button tttBtn3 = new Button("AI vs AI");
+        tttBtn3.setOnAction(event -> new TicTacToeView((byte) 2));
+        tttHBox.getChildren().addAll(tttBtn1, tttBtn2, tttBtn3);
 
-        Button othello = new Button("Open othello");
-        othello.setOnAction(event -> new OthelloView((byte) 1));
+        Label othLabel = new Label("Othello:");
+        HBox othHBox = new HBox();
+        Button othBtn1 = new Button("Human vs AI");
+        othBtn1.setOnAction(event -> new OthelloView((byte) 0));
+        Button othBtn2 = new Button("Human vs Human");
+        othBtn2.setOnAction(event -> new OthelloView((byte) 1));
+        Button othBtn3 = new Button("AI vs AI");
+        othBtn3.setOnAction(event -> new OthelloView((byte) 2));
+        othHBox.getChildren().addAll(othBtn1, othBtn2, othBtn3);
 
         Button openServCon = new Button("Open server connection");
         openServCon.setOnAction(event -> ServerController.createPersistentServerController());
@@ -36,25 +51,7 @@ public class Homescreen extends Application {
         Button closeconn = new Button("Close server connection");
         closeconn.setOnAction(event -> ServerController.getPersistentServerController().disconnect());
 
-        Button Simonbtn1 = new Button("Open othello");
-        Simonbtn1.setOnAction(event -> new OthelloView((byte) 1));
-
-        Button Simonbtn2 = new Button("Open othello");
-        Simonbtn2.setOnAction(event -> new OthelloView((byte) 1));
-
-        Button Simonbtn3 = new Button("Open othello");
-        Simonbtn3.setOnAction(event -> new OthelloView((byte) 1));
-
-        Button Simonbtn4 = new Button("Open othello");
-        Simonbtn4.setOnAction(event -> new OthelloView((byte) 1));
-
-        Button ai = new Button("AI");
-
-        Button human = new Button("Human");
-
-        vBox.getChildren().addAll(name, nameInput, openTTT, othello,server,openServCon,closeconn, ai, human, Simonbtn1,Simonbtn2,Simonbtn3,Simonbtn4);
-
-        othello.setOnAction(event -> new OthelloView((byte) 1));
+        vBox.getChildren().addAll(name, nameInput, tttLabel, tttHBox, othLabel, othHBox, server, openServCon, closeconn);
 
         primaryStage.setScene(scene);
         primaryStage.show();
