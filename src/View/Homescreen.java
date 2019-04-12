@@ -20,6 +20,8 @@ public class Homescreen extends Application {
 
         Label name = new Label("Name: ");
 
+        Label server = new Label("Server commands: ");
+
         TextField nameInput = new TextField();
 
         Button openTTT = new Button("Open Tictactoe");
@@ -38,7 +40,7 @@ public class Homescreen extends Application {
 
         Button human = new Button("Human");
 
-        vBox.getChildren().addAll(name, nameInput, openTTT,openServCon,closeconn, othello, ai, human);
+        vBox.getChildren().addAll(name, nameInput, openTTT, othello,server,openServCon,closeconn, ai, human);
 
         othello.setOnAction(event -> new OthelloView());
 

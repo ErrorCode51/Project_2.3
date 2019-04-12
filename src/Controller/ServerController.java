@@ -13,10 +13,6 @@ import Controller.NetworkInputObserver.NetworkInputSubject;
 import Controller.NetworkTurnObserver.NetworkTurnSubject;
 import com.google.common.base.*;
 
-//todo: remove once random string generator is remove from yourturn case
-
-
-// TODO: 03/04/2019 clean this mess up and make handlers for the switch cases
 
 public class ServerController implements Runnable{
     private final String host = NetworkConfigurator.getProperty("SERVER_IP");
@@ -62,12 +58,9 @@ public class ServerController implements Runnable{
     }
 
 //    server message handling
-// TODO: 03/04/2019 handle events with AI
     private void handleMessage(){
         try {
             String servmessage = br.readLine();
-
-            System.out.println(servmessage);
 
             if (servmessage.contains("{")) {
                 genMap(servmessage);
@@ -101,8 +94,8 @@ public class ServerController implements Runnable{
     private void genMap(String serverMessage){
 
         String tempString = serverMessage.substring(serverMessage.indexOf("{"));
-        tempString = tempString.trim();
-//        Trims the following: { } "
+
+//      Trims the following: { } "
         tempString = tempString.replaceAll("[{}\"]", "");
 
         tempString = tempString.replace(", ", ",");
@@ -115,8 +108,6 @@ public class ServerController implements Runnable{
 //    Handles all server(SVR) related messages
     private void handleSrv(String typeOfMessage){
             switch (typeOfMessage){
-                case "HELP":
-                    break;
                 case "GAME":
                     gamehandler(splittedMessage[2]);
                     break;
@@ -126,6 +117,7 @@ public class ServerController implements Runnable{
                     break;
             }
     }
+
 // handles all messages containing the word GAME
     private void gamehandler(String gameOption){
         switch(gameOption){
@@ -163,9 +155,11 @@ public class ServerController implements Runnable{
         }
     }
 
+
     public String getGame(){
        return this.GameType;
     }
+
 
     public void sendMove(byte[] move, byte boardSize) {
         clientcom.move(Integer.toString((move[0] * boardSize) + move[1]), out);
@@ -194,6 +188,8 @@ public class ServerController implements Runnable{
         }
         return persistentServerController;
     }
+
+
     public void disconnect(){
         try{
             socket.close();
