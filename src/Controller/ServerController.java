@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.Map;
 
 import Controller.NetworkForfeitObserver.NetworkForfeitSubject;
@@ -12,10 +13,6 @@ import Controller.NetworkInputObserver.NetworkInputSubject;
 import Controller.NetworkTurnObserver.NetworkTurnSubject;
 import com.google.common.base.*;
 
-//todo: remove once random string generator is remove from yourturn case
-
-
-// TODO: 03/04/2019 clean this mess up and make handlers for the switch cases
 
 public class ServerController implements Runnable{
     private final String host = NetworkConfigurator.getProperty("SERVER_IP");
@@ -70,7 +67,6 @@ public class ServerController implements Runnable{
     }
 
 //    server message handling
-// TODO: 03/04/2019 handle events with AI
     private void handleMessage(){
         try {
             String servmessage = br.readLine();
@@ -95,7 +91,11 @@ public class ServerController implements Runnable{
                     handleSrv(splittedMessage[1]);
                     break;
             }
-        }catch (IOException IE){
+        }
+        catch (SocketException se) {
+            System.err.println("connections was closed");
+        }
+        catch (IOException IE){
             IE.printStackTrace();
         }
     }
@@ -119,8 +119,6 @@ public class ServerController implements Runnable{
 //    Handles all server(SVR) related messages
     private void handleSrv(String typeOfMessage){
             switch (typeOfMessage){
-                case "HELP":
-                    break;
                 case "GAME":
                     gamehandler(splittedMessage[2]);
                     break;
@@ -167,9 +165,11 @@ public class ServerController implements Runnable{
         }
     }
 
+
     public String getGame(){
        return this.GameType;
     }
+
 
     public void sendMove(byte[] move, byte boardSize) {
         clientcom.move(Integer.toString((move[0] * boardSize) + move[1]), out);
@@ -197,5 +197,17 @@ public class ServerController implements Runnable{
             createPersistentServerController();
         }
         return persistentServerController;
+    }
+
+
+    public void disconnect(){
+        try{
+            socket.close();
+            clientcom.logout(out);
+            running = false;
+        }
+        catch (IOException ioe){
+            System.out.println("There is no server to disconnect from");
+        }
     }
 }
