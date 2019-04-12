@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.net.SocketException;
 import java.util.Map;
 
 import Controller.NetworkForfeitObserver.NetworkForfeitSubject;
@@ -53,9 +54,10 @@ public class ServerController implements Runnable{
     public void run()  {
         connectToServer();
         clientcom.loginToServer(NetworkConfigurator.getProperty("PLAYER_NAME"), out);
-        clientcom.subTogame("Tic-tac-toe",out);
+//        clientcom.subTogame("Tic-tac-toe",out);
         while(running){
             handleMessage();
+
         }
     }
 
@@ -85,7 +87,11 @@ public class ServerController implements Runnable{
                     handleSrv(splittedMessage[1]);
                     break;
             }
-        }catch (IOException IE){
+        }
+        catch (SocketException se) {
+            System.err.println("connections was closed");
+        }
+        catch (IOException IE){
             IE.printStackTrace();
         }
     }
@@ -187,5 +193,15 @@ public class ServerController implements Runnable{
             createPersistentServerController();
         }
         return persistentServerController;
+    }
+    public void disconnect(){
+        try{
+            socket.close();
+            clientcom.logout(out);
+            running = false;
+        }
+        catch (IOException ioe){
+            System.out.println("There is no server to disconnect from");
+        }
     }
 }

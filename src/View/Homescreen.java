@@ -1,5 +1,6 @@
 package View;
 
+import Controller.ServerController;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -27,11 +28,17 @@ public class Homescreen extends Application {
         Button othello = new Button("Open othello");
         othello.setOnAction(event -> new OthelloView());
 
+        Button openServCon = new Button("Open server connection");
+        openServCon.setOnAction(event -> ServerController.createPersistentServerController());
+
+        Button closeconn = new Button("Close server connection");
+        closeconn.setOnAction(event -> ServerController.getPersistentServerController().disconnect());
+
         Button ai = new Button("AI");
 
         Button human = new Button("Human");
 
-        vBox.getChildren().addAll(name, nameInput, openTTT, othello, ai, human);
+        vBox.getChildren().addAll(name, nameInput, openTTT,openServCon,closeconn, othello, ai, human);
 
         othello.setOnAction(event -> new OthelloView());
 

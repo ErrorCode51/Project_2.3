@@ -18,7 +18,7 @@ class Main {
         NetworkConfigurator.loadPropFile();
 
         // FOR TESTING todo: REMOVE WHEN DONE TESTING FFS
-        ServerController.createPersistentServerController();
+//        ServerController.createPersistentServerController();
 
 
         launch(Homescreen.class, args);
