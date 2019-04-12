@@ -36,11 +36,23 @@ public class Homescreen extends Application {
         Button closeconn = new Button("Close server connection");
         closeconn.setOnAction(event -> ServerController.getPersistentServerController().disconnect());
 
+        Button Simonbtn1 = new Button("Open othello");
+        Simonbtn1.setOnAction(event -> new OthelloView((byte) 1));
+
+        Button Simonbtn2 = new Button("Open othello");
+        Simonbtn2.setOnAction(event -> new OthelloView((byte) 1));
+
+        Button Simonbtn3 = new Button("Open othello");
+        Simonbtn3.setOnAction(event -> new OthelloView((byte) 1));
+
+        Button Simonbtn4 = new Button("Open othello");
+        Simonbtn4.setOnAction(event -> new OthelloView((byte) 1));
+
         Button ai = new Button("AI");
 
         Button human = new Button("Human");
 
-        vBox.getChildren().addAll(name, nameInput, openTTT, othello,server,openServCon,closeconn, ai, human);
+        vBox.getChildren().addAll(name, nameInput, openTTT, othello,server,openServCon,closeconn, ai, human, Simonbtn1,Simonbtn2,Simonbtn3,Simonbtn4);
 
         othello.setOnAction(event -> new OthelloView((byte) 1));
 
