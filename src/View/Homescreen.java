@@ -25,10 +25,10 @@ public class Homescreen extends Application {
         TextField nameInput = new TextField();
 
         Button openTTT = new Button("Open Tictactoe");
-        openTTT.setOnAction(event -> new TicTacToeView());
+        openTTT.setOnAction(event -> new TicTacToeView((byte) 1));
 
         Button othello = new Button("Open othello");
-        othello.setOnAction(event -> new OthelloView());
+        othello.setOnAction(event -> new OthelloView((byte) 1));
 
         Button openServCon = new Button("Open server connection");
         openServCon.setOnAction(event -> ServerController.createPersistentServerController());
@@ -42,7 +42,7 @@ public class Homescreen extends Application {
 
         vBox.getChildren().addAll(name, nameInput, openTTT, othello,server,openServCon,closeconn, ai, human);
 
-        othello.setOnAction(event -> new OthelloView());
+        othello.setOnAction(event -> new OthelloView((byte) 1));
 
         primaryStage.setScene(scene);
         primaryStage.show();

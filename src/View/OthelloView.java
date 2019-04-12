@@ -10,7 +10,7 @@ public class OthelloView extends View {
 
     private final Cell[][] CELL = new Cell[8][8];
 
-    public OthelloView() {
+    public OthelloView(byte gameMode) {
         Stage stage = new Stage();
         GridPane pane = new GridPane();
         for (byte row = 0; row < 8; row++) {
@@ -32,7 +32,7 @@ public class OthelloView extends View {
         stage.show();
         //stage.setOnCloseRequest(e -> System.exit(0));
 
-        Othello game = new Othello(this, true);
+        Othello game = new Othello(this, gameMode);
         Thread thread = new Thread(game);
         thread.start();
     }

@@ -27,8 +27,16 @@ public class ServerController implements Runnable{
     private String playerToMove;
     private String GameType;
 
+    private String subGameType;
+
     private static ServerController persistentServerController;
     private TournamentChecker checktour = new TournamentChecker();
+
+    public ServerController(String subType) {
+        if (subType != null) {
+            this.subGameType = subType;
+        }
+    }
 
 //Open a socket connection to the server if possible
     private void connectToServer(){
@@ -50,10 +58,11 @@ public class ServerController implements Runnable{
     public void run()  {
         connectToServer();
         clientcom.loginToServer(NetworkConfigurator.getProperty("PLAYER_NAME"), out);
-//        clientcom.subTogame("Tic-tac-toe",out);
+        if (this.subGameType != null) {
+            clientcom.subTogame(this.subGameType, out);
+        }
         while(running){
             handleMessage();
-
         }
     }
 
@@ -61,6 +70,8 @@ public class ServerController implements Runnable{
     private void handleMessage(){
         try {
             String servmessage = br.readLine();
+
+            System.out.println(servmessage);
 
             if (servmessage.contains("{")) {
                 genMap(servmessage);
@@ -94,8 +105,8 @@ public class ServerController implements Runnable{
     private void genMap(String serverMessage){
 
         String tempString = serverMessage.substring(serverMessage.indexOf("{"));
-
-//      Trims the following: { } "
+        tempString = tempString.trim();
+//        Trims the following: { } "
         tempString = tempString.replaceAll("[{}\"]", "");
 
         tempString = tempString.replace(", ", ",");
@@ -117,7 +128,6 @@ public class ServerController implements Runnable{
                     break;
             }
     }
-
 // handles all messages containing the word GAME
     private void gamehandler(String gameOption){
         switch(gameOption){
@@ -176,7 +186,7 @@ public class ServerController implements Runnable{
 
 
     public static void createPersistentServerController() {
-        persistentServerController = new ServerController();
+        persistentServerController = new ServerController(null);
         Thread t = new Thread(persistentServerController);
         t.start();
     }
