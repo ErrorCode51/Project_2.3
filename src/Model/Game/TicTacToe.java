@@ -10,15 +10,14 @@ import Controller.NetworkTurnObserver.NetworkTurnSubject;
 import Controller.ServerController;
 import Model.Board.Board;
 import Model.Board.TicTacToeBoard;
-import Model.Player.ArtificialPlayer;
-import Model.Player.LocalPlayer;
-import Model.Player.NetworkPlayer;
-import Model.Player.Player;
+import Model.Player.*;
 import Model.Rules.Rules;
 import Model.Rules.TicTacToeRules;
 import Model.Stone.Stone;
 import Model.Stone.TicTacToeStone;
 import View.TicTacToeView;
+
+import java.util.Random;
 
 public class TicTacToe implements Game, NetworkTurnObserver, NetworkForfeitObserver {
 
@@ -34,7 +33,14 @@ public class TicTacToe implements Game, NetworkTurnObserver, NetworkForfeitObser
     private NetworkPlayer nwPlayer;
     private boolean enemyForfeited = false;
 
-    public TicTacToe(TicTacToeView view, boolean usingNetwork) {
+//    GameMode variable:
+//    0: Local: Human vs AI
+//    1: Local: Human vs Human
+//    2: Local: AI vs AI
+//    10: Network vs local Human
+//    11: Network vs local AI
+
+    public TicTacToe(TicTacToeView view, byte gameMode) {
 
         // Refactor: Constructor Done!
         board = new TicTacToeBoard();
@@ -43,10 +49,27 @@ public class TicTacToe implements Game, NetworkTurnObserver, NetworkForfeitObser
         this.rules = new TicTacToeRules();
         board.initialize(rules);
 
-        if (!usingNetwork) {
-            players[0] = new LocalPlayer('X');
-            players[1] = new ArtificialPlayer('O');
-        } else {
+        if (gameMode < 10) {
+            switch (gameMode) {
+                case 0:
+                    if (new Random().nextBoolean()) {
+                        players[0] = new LocalPlayer('X');
+                        players[1] = new ArtificialPlayer('O');
+                    } else {
+                        players[0] = new ArtificialPlayer('X');
+                        players[1] = new LocalPlayer('O');
+                    }
+                    break;
+                case 1:
+                    players[0] = new LocalPlayer('X');
+                    players[1] = new LocalPlayer('O');
+                    break;
+                case 2:
+                    players[0] = new ArtificialPlayer('X');
+                    players[1] = new ArtificialPlayer('O');
+                    break;
+            }
+        } else if (gameMode < 20) {
             this.controllertje = ServerController.getPersistentServerController();
 //            controllertje.resetGameData();
 
@@ -55,16 +78,42 @@ public class TicTacToe implements Game, NetworkTurnObserver, NetworkForfeitObser
             }
 
             if (controllertje.getPlayerToMove().equals(NetworkConfigurator.getProperty("PLAYER_NAME"))) {
-                players[0] = new LocalPlayer('X');
-                nwPlayer = new NetworkPlayer('O');
-                players[1] = nwPlayer;
+                players[1] = new NetworkPlayer('O');
                 localPosition = 0;
             } else {
-                nwPlayer = new NetworkPlayer('X');
-                players[0] = nwPlayer;
-                players[1] = new LocalPlayer('O');
+                players[0] = new NetworkPlayer('X');
                 localPosition = 1;
             }
+
+            switch (gameMode) {
+                case 10:
+                    players[localPosition] = new LocalPlayer((localPosition == 0) ? 'X' : 'O');
+                    break;
+                case 11:
+                    players[localPosition] = new ArtificialPlayer((localPosition == 0) ? 'X' : 'O');
+            }
+
+//            if (controllertje.getPlayerToMove().equals(NetworkConfigurator.getProperty("PLAYER_NAME"))) {
+//                if (usingAI) {
+//                    players[0] = new ArtificialPlayer('X');
+//                }
+//                else {
+//                    players[0] = new LocalPlayer('X');
+//                }
+//                nwPlayer = new NetworkPlayer('O');
+//                players[1] = nwPlayer;
+//                localPosition = 0;
+//            } else {
+//                nwPlayer = new NetworkPlayer('X');
+//                players[0] = nwPlayer;
+//                if (usingAI) {
+//                    players[1] = new ArtificialPlayer('O');
+//                }
+//                else {
+//                    players[1] = new LocalPlayer('O');
+//                }
+//                localPosition = 1;
+//            }
         }
     }
 

@@ -17,7 +17,7 @@ public class TicTacToeView extends View {
     }
 
 
-    public TicTacToeView() {
+    public TicTacToeView(byte gameMode) {
         Stage stage = new Stage();
         GridPane pane = new GridPane();
         for (byte row = 0; row < 3; row++) {
@@ -35,7 +35,7 @@ public class TicTacToeView extends View {
         stage.show();
         //stage.setOnCloseRequest(e -> System.exit(0));
 
-        game = new TicTacToe(this, true);
+        game = new TicTacToe(this, gameMode);
         Thread thread = new Thread(game);
         thread.start();
     }
