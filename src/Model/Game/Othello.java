@@ -8,13 +8,15 @@ import Controller.NetworkTurnObserver.NetworkTurnObserver;
 import Controller.NetworkTurnObserver.NetworkTurnSubject;
 import Controller.ServerController;
 import Model.Board.OthelloBoard;
-import Model.Player.*;
+import Model.Player.AlphaBetaReworkAI;
+import Model.Player.LocalPlayer;
+import Model.Player.NetworkPlayer;
+import Model.Player.Player;
 import Model.Rules.OthelloRules;
 import Model.Stone.OthelloStone;
 import Model.Stone.Stone;
 import View.OthelloView;
 
-import java.util.ArrayList;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
@@ -134,12 +136,12 @@ public class Othello implements Game, NetworkTurnObserver, NetworkForfeitObserve
             NetworkForfeitSubject.subscribe(this);
             while (rules.gameOver(board) == 'N' && !enemyForfeited) {
                 if (yourTurn) {
-                    try {
-                        TimeUnit.SECONDS.sleep(1);
-                    } catch (InterruptedException e) {
-                        System.err.println("Stront aan de knikker met sleep");
-                        e.printStackTrace();
-                    }
+//                    try {
+//                        TimeUnit.SECONDS.sleep(1);
+//                    } catch (InterruptedException e) {
+//                        System.err.println("Stront aan de knikker met sleep");
+//                        e.printStackTrace();
+//                    }
                     currentPlayer = players[localPosition].getIdentifier();
                     handlePlacement(players[localPosition]);
                     view.setBoard(board);
@@ -179,19 +181,26 @@ public class Othello implements Game, NetworkTurnObserver, NetworkForfeitObserve
         System.out.println("#2: " + player.getIdentifier());
         // System.out.println("Player returns: " + placement[0] + ", " + placement[1]);
         try {
-            if (placement[0] < board.getSize() && placement[1] < board.getSize()) {
-                Stone stone = new OthelloStone(placement[0], placement[1], player.getIdentifier());
-                System.out.println("#3: " + stone);
-                // Todo: stop calling this method twice you idiot!
+            if (yourTurn) {
+                if (placement[0] < board.getSize() && placement[1] < board.getSize()) {
+                    Stone stone = new OthelloStone(placement[0], placement[1], player.getIdentifier());
+                    System.out.println("#3: " + stone);
+                    // Todo: stop calling this method twice you idiot!
 //                if (!rules.testForLegal(board, stone, false)) {
 //                    System.err.println(stone + " Illegal placement");
 //                    return false;
 //                }
+
+                    if (controllertje != null && !(player instanceof NetworkPlayer)) {
+                        controllertje.sendMove(placement, this.board.getSize());
+                    }
+
+                    rules.testForLegal(board, stone, true);
+                    return board.set(stone);
+                }
+            } else {
+                Stone stone = new OthelloStone(placement[0], placement[1], player.getIdentifier());
                 rules.testForLegal(board, stone, true);
-
-                if (controllertje != null && !(player instanceof NetworkPlayer))
-                    controllertje.sendMove(placement, this.board.getSize());
-
                 return board.set(stone);
             }
         } catch (Exception e) {
