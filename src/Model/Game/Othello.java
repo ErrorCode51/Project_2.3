@@ -16,6 +16,7 @@ import View.OthelloView;
 
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 public class Othello implements Game, NetworkTurnObserver, NetworkForfeitObserver {
 
@@ -133,6 +134,12 @@ public class Othello implements Game, NetworkTurnObserver, NetworkForfeitObserve
             NetworkForfeitSubject.subscribe(this);
             while (rules.gameOver(board) == 'N' && !enemyForfeited) {
                 if (yourTurn) {
+                    try {
+                        TimeUnit.SECONDS.sleep(1);
+                    } catch (InterruptedException e) {
+                        System.err.println("Stront aan de knikker met sleep");
+                        e.printStackTrace();
+                    }
                     currentPlayer = players[localPosition].getIdentifier();
                     handlePlacement(players[localPosition]);
                     view.setBoard(board);
@@ -167,16 +174,19 @@ public class Othello implements Game, NetworkTurnObserver, NetworkForfeitObserve
     }
 
     public boolean handlePlacement(Player player) {
+        System.out.println("#1: " + player.getIdentifier());
         byte[] placement = player.placeStone(board, rules);
+        System.out.println("#2: " + player.getIdentifier());
         // System.out.println("Player returns: " + placement[0] + ", " + placement[1]);
         try {
             if (placement[0] < board.getSize() && placement[1] < board.getSize()) {
                 Stone stone = new OthelloStone(placement[0], placement[1], player.getIdentifier());
+                System.out.println("#3: " + stone);
                 // Todo: stop calling this method twice you idiot!
-                if (!rules.testForLegal(board, stone, false)) {
-                    System.err.println(stone + "Illegal placement");
-                    return false;
-                }
+//                if (!rules.testForLegal(board, stone, false)) {
+//                    System.err.println(stone + " Illegal placement");
+//                    return false;
+//                }
                 rules.testForLegal(board, stone, true);
 
                 if (controllertje != null && !(player instanceof NetworkPlayer))

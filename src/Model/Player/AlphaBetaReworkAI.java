@@ -9,6 +9,7 @@ import Model.Stone.OthelloStone;
 import Model.Stone.Stone;
 
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 public class AlphaBetaReworkAI implements Player {
 
