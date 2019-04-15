@@ -48,11 +48,11 @@ public class ArtificialOthello implements Player {
         int indexBestPlacement = 0;
         ArrayList<Node> branches = root.getBranches();
         for (int index = 0, size = branches.size(); index < size; index++) {
-            if (branches.get(index).getMaximumScore() > branches.get(indexBestPlacement).getMaximumScore()) {
+            if (branches.get(index).getAlpha() > branches.get(indexBestPlacement).getAlpha()) {
                 indexBestPlacement = index;
             }
-            if (branches.get(index).getMaximumScore() == branches.get(indexBestPlacement).getMaximumScore()) {
-                if (branches.get(index).getMinimumScore() > branches.get(indexBestPlacement).getMinimumScore()) {
+            if (branches.get(index).getAlpha() == branches.get(indexBestPlacement).getAlpha()) {
+                if (branches.get(index).getBeta() > branches.get(indexBestPlacement).getBeta()) {
                     indexBestPlacement = index;
                 }
             }
@@ -121,11 +121,11 @@ public class ArtificialOthello implements Player {
                             stone.getX() == 5 && stone.getY() == 5 || stone.getX() == 5 && stone.getY() == 2) {
                         score += 5;
                     }
-                    if (score > node.getMaximumScore()) {
-                        node.setMaximumScore(score);
+                    if (score > node.getAlpha()) {
+                        node.setAlpha(score);
                         if (node.getPrevious() != null) {
-                            if (score > node.getPrevious().getMaximumScore()) {
-                                node.getPrevious().setMaximumScore(score);
+                            if (score > node.getPrevious().getAlpha()) {
+                                node.getPrevious().setAlpha(score);
                             }
                         }
                     }
@@ -148,11 +148,11 @@ public class ArtificialOthello implements Player {
                             stone.getX() == 5 && stone.getY() == 5 || stone.getX() == 5 && stone.getY() == 2) {
                         score -= 5;
                     }
-                    if (score < node.getMinimumScore()) {
-                        node.setMinimumScore(score);
+                    if (score < node.getBeta()) {
+                        node.setBeta(score);
                         if (node.getPrevious() != null) {
-                            if (score < node.getPrevious().getMinimumScore()) {
-                                node.getPrevious().setMinimumScore(score);
+                            if (score < node.getPrevious().getBeta()) {
+                                node.getPrevious().setBeta(score);
                             }
                         }
                     }
@@ -165,9 +165,9 @@ public class ArtificialOthello implements Player {
                     // I'll leave this here for future reference as this is the ideal place to put a println()
                     // System.out.println(stones);
                     // if (stones.get(0).getIdentifier() == this.identifier) {
-                    //     System.out.println(node.getStone() + " max. score is: " + node.getMaximumScore());
+                    //     System.out.println(node.getStone() + " max. score is: " + node.getAlpha());
                     // } else {
-                    //     System.out.println(node.getStone() + " min. score is: " + node.getMinimumScore());
+                    //     System.out.println(node.getStone() + " min. score is: " + node.getBeta());
                     // }
                 }
             }

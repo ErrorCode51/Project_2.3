@@ -1,6 +1,7 @@
 package Model.Stone;
 
 import Model.Exception.InvalidIdentifierException;
+import Model.Game.Othello;
 
 public class OthelloStone extends Stone {
 
@@ -56,11 +57,14 @@ public class OthelloStone extends Stone {
     }
 
     @Override
-    public boolean equals(Object object) {
-        return (object instanceof OthelloStone &&
-                this.x == ((OthelloStone) object).getX() &&
-                this.x == ((OthelloStone) object).getY() &&
-                this.identifier == ((OthelloStone) object).getIdentifier());
+    public boolean equals(Object obj) {
+        if (obj instanceof OthelloStone) {
+            OthelloStone stone = (OthelloStone) obj;
+            if (this.x == stone.x && this.y == stone.y) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public void turnOver() {

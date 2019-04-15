@@ -58,6 +58,8 @@ public class ServerController implements Runnable{
     public void run()  {
         connectToServer();
         clientcom.loginToServer(NetworkConfigurator.getProperty("PLAYER_NAME"), out);
+//        clientcom.subTogame("Tic-tac-toe",out);
+
         if (this.subGameType != null) {
             clientcom.subTogame(this.subGameType, out);
         }

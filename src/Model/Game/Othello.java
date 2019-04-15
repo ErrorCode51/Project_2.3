@@ -8,11 +8,7 @@ import Controller.NetworkTurnObserver.NetworkTurnObserver;
 import Controller.NetworkTurnObserver.NetworkTurnSubject;
 import Controller.ServerController;
 import Model.Board.OthelloBoard;
-import Model.Player.ArtificialOthello;
-import Model.Player.ArtificialPlayer;
-import Model.Player.LocalPlayer;
-import Model.Player.NetworkPlayer;
-import Model.Player.Player;
+import Model.Player.*;
 import Model.Rules.OthelloRules;
 import Model.Stone.OthelloStone;
 import Model.Stone.Stone;
@@ -178,6 +174,7 @@ public class Othello implements Game, NetworkTurnObserver, NetworkForfeitObserve
                 Stone stone = new OthelloStone(placement[0], placement[1], player.getIdentifier());
                 // Todo: stop calling this method twice you idiot!
                 if (!rules.testForLegal(board, stone, false)) {
+                    System.err.println(stone + "Illegal placement");
                     return false;
                 }
                 rules.testForLegal(board, stone, true);
