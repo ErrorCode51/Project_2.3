@@ -59,9 +59,9 @@ public class Othello implements Game, NetworkTurnObserver, NetworkForfeitObserve
                 case 0:
                     if (new Random().nextBoolean()) {
                         players[0] = new LocalPlayer('W');
-                        players[1] = new ArtificialOthello('B');
+                        players[1] = new AlphaBetaReworkAI('B');
                     } else {
-                        players[0] = new ArtificialOthello('W');
+                        players[0] = new AlphaBetaReworkAI('W');
                         players[1] = new LocalPlayer('B');
                     }
                     break;
@@ -70,8 +70,8 @@ public class Othello implements Game, NetworkTurnObserver, NetworkForfeitObserve
                     players[1] = new LocalPlayer('B');
                     break;
                 case 2:
-                    players[0] = new ArtificialOthello('W');
-                    players[1] = new ArtificialOthello('B');
+                    players[0] = new AlphaBetaReworkAI('W');
+                    players[1] = new AlphaBetaReworkAI('B');
                     break;
             }
         } else if (gameMode < 20) {
@@ -99,7 +99,7 @@ public class Othello implements Game, NetworkTurnObserver, NetworkForfeitObserve
                     players[localPosition] = new LocalPlayer((localPosition == 0) ? 'B' : 'W');
                     break;
                 case 11:
-                    players[localPosition] = new ArtificialOthello((localPosition == 0) ? 'B' : 'W');
+                    players[localPosition] = new AlphaBetaReworkAI((localPosition == 0) ? 'B' : 'W');
                     break;
             }
         }
