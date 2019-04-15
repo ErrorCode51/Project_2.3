@@ -136,12 +136,12 @@ public class Othello implements Game, NetworkTurnObserver, NetworkForfeitObserve
             NetworkForfeitSubject.subscribe(this);
             while (rules.gameOver(board) == 'N' && !enemyForfeited) {
                 if (yourTurn) {
-//                    try {
-//                        TimeUnit.SECONDS.sleep(1);
-//                    } catch (InterruptedException e) {
-//                        System.err.println("Stront aan de knikker met sleep");
-//                        e.printStackTrace();
-//                    }
+                    try {
+                        TimeUnit.SECONDS.sleep(1);
+                    } catch (InterruptedException e) {
+                        System.err.println("Stront aan de knikker met sleep");
+                        e.printStackTrace();
+                    }
                     currentPlayer = players[localPosition].getIdentifier();
                     handlePlacement(players[localPosition]);
                     view.setBoard(board);
